@@ -1,0 +1,7 @@
+---
+// 把包在裡面的內文 HTML 中的 wikilink 記號，換成真正的文章連結。
+// 在頁面輸出時才做，所以新增或改名筆記之後，所有文章裡的連結都會跟著更新。
+import { resolveWikilinksInHtml } from '../lib/wikilinks.mjs';
+const html = resolveWikilinksInHtml(await Astro.slots.render('default'));
+---
+<Fragment set:html={html} />

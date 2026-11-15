@@ -1,0 +1,35 @@
+---
+// 筆記目錄：本身就是堆疊裡的一頁。點類別展開文章列表，點文章就在右邊打開。
+import { getCollection } from 'astro:content';
+import StackShell from '../../components/StackShell.astro';
+import { NOTE_CATEGORIES, UNCATEGORIZED } from '../../consts';
+
+const notes = await getCollection('notes');
+const byTitle = (a: { data: { title: string } }, b: { data: { title: string } }) => a.data.title.localeCompare(b.data.title, 'zh-Hant');
+
+// 依 frontmatter 的 category 分組；consts.ts 裡列出的類別排前面並帶圖示，其餘照名稱排，未分類放最後
+const names = [...new Set(notes.map((note) => note.data.category ?? UNCATEGORIZED.name))];
+const known = NOTE_CATEGORIES.filter((category) => names.includes(category.name));
+const others = names
+  .filter((name) => name !== UNCATEGORIZED.name && !known.some((category) => category.name === name))
+  .sort((a, b) => a.localeCompare(b, 'zh-Hant'))
+  .map((name) => ({ name, icon: '📄' }));
+const groups = [...known, ...others, ...(names.includes(UNCATEGORIZED.name) ? [UNCATEGORIZED] : [])].map((category) => ({
+  ...category,
+  notes: notes.filter((note) => (note.data.category ?? UNCATEGORIZED.name) === category.name).sort(byTitle),
+}));
+---
+<StackShell paneKey="notes" title="筆記" description="各種知識的筆記，依類別整理。" narrow>
+  <header class="article-header">
+    <h1>筆記</h1>
+    <p class="article-meta"><span>{notes.length} 篇・{groups.length} 個類別</span></p>
+  </header>
+  <nav class="note-tree" aria-label="筆記類別">
+    {groups.map((group) => (
+      <details class="note-group">
+        <summary><span class="note-group-icon" aria-hidden="true">{group.icon}</span><span class="note-group-name">{group.name}</span><span class="note-group-count">{group.notes.length}</span></summary>
+        <ul>{group.notes.map((note) => <li><a href={`/notes/${note.id}/`}>{note.data.title}</a></li>)}</ul>
+      </details>
+    ))}
+  </nav>
+</StackShell>

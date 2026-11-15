@@ -1,0 +1,31 @@
+---
+// 英數用 Roboto；中文交給系統字體（Windows 是微軟正黑體、macOS 是蘋方）
+import '@fontsource/roboto/latin-400.css';
+import '@fontsource/roboto/latin-400-italic.css';
+import '@fontsource/roboto/latin-700.css';
+import '../styles/global.css';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+const { title = SITE_TITLE, description = SITE_DESCRIPTION, stack = false } = Astro.props;
+---
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f8f7f2" />
+    <title>{title}</title>
+  </head>
+  <body class={stack ? 'has-stack' : undefined}>
+    <div class="site-frame">
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="blog"><span>blog</span></a>
+      <nav aria-label="主要導覽"><a href="/">Me</a><a href="/blog/">胡言亂語</a><a href="/notes/">學習整理</a><a href="/rss.xml">RSS</a></nav>
+    </header>
+    <slot />
+    <footer class="site-footer"><span>© {new Date().getFullYear()} blog</span></footer>
+    </div>
+  </body>
+</html>
+
+

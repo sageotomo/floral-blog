@@ -1,0 +1,226 @@
+:root {
+  color-scheme: light;
+  --ink: #1c1e21;
+  --muted: #1c1e21;
+  --blue: #444950;
+  --blue-soft: #ececec;
+  --paper: #fffefa;
+  --line: #ccc0b2;
+  --link: #444950;      /* 連結：深灰粗體 */
+  --link-soft: #ececec; /* 已經在右邊開啟的連結底色 */
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; background: #f8f7f2; scroll-behavior: smooth; }
+body { min-height: 100vh; margin: 0; padding: 56px 0; color: var(--ink); background-color: #fff; font-family: "Roboto", system-ui, "Noto Sans TC", sans-serif; font-size: 18px; line-height: 1.75; letter-spacing: .04em; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-underline-offset:3px; }
+.site-frame { display: flex; flex-direction: column; width: min(76%, 1920px); min-height: calc(100vh - 112px); margin: 0 auto; background: #fff; border: 1.3px solid var(--line); box-shadow: 0 12px 42px rgba(36,54,74,.10); }
+.site-header { width: 100%; min-height: 84px; padding: 16px 26px; position: relative; display: flex; align-items: center; justify-content: flex-start; gap: 44px; background: transparent; border: 0; border-bottom: 1.3px solid var(--line); box-shadow: none; }
+.wordmark,.site-header nav { color:#453b32; }
+.article-header h1 { color:#000; }
+.wordmark { display:flex; align-items:center; gap:10px; font-size:25px; font-weight:700; letter-spacing:.04em; line-height:1.1; }
+.wordmark small { display:block; margin-top:5px; font-weight:400; color:var(--muted); font-size:12px; line-height:1.2; letter-spacing:.22em; }
+.site-header nav { display:flex; gap:30px; font-size:20px; letter-spacing:.04em; }
+.home,.archive,.article-shell { width:min(100% - 48px, 760px); margin:0 auto; }
+.home { padding:78px 0 110px; }
+.welcome { position:relative; padding:16px 0 70px; border-bottom:1.3px solid var(--line); }
+.eyebrow { color:var(--ink); font-size:13px; line-height:1.6; letter-spacing:.22em; }
+.welcome h1 { margin:22px 0 20px; font-size:clamp(34px,5vw,50px); font-weight:400; line-height:1.55; letter-spacing:.05em; }
+.welcome h1 em { color:var(--ink); font-style:normal; }
+.welcome-copy { color:var(--ink); font-size:18px; }
+.text-link,.all-posts { display:inline-block; margin-top:20px; padding-bottom:4px; border-bottom:1.3px solid var(--line); color:var(--ink); font-size:16px; letter-spacing:.08em; }
+.welcome-sprig { position:absolute; right:5%; top:34px; color:rgba(68,73,80,.14); font-size:117px; line-height:1; }
+.latest { padding-top:58px; }
+.section-heading { margin-bottom:24px; }
+.section-heading .eyebrow { margin:0 0 8px; }
+.section-heading h2,.page-intro h1 { margin:0; font-size:29px; font-weight:400; letter-spacing:.1em; }
+.post-list { border-top:1.3px solid var(--line); }
+.post-row { display:grid; grid-template-columns:130px 1fr 24px; gap:18px; align-items:start; padding:22px 4px; border-bottom:1.3px solid var(--line); }
+.post-row.no-date { grid-template-columns:1fr 24px; }
+.post-row time { padding-top:5px; color:var(--muted); font-size:14px; line-height:1.7; letter-spacing:.04em; }
+.post-row h2,.post-row h3 { margin:0 0 4px; font-size:21px; font-weight:400; letter-spacing:.04em; }
+.post-row p { margin:0; color:var(--ink); font-size:16px; }
+.row-arrow { padding-top:4px; color:var(--ink); }
+.empty-note { color:var(--muted); }
+.archive { min-height:65vh; padding:66px 0 110px; }
+.page-intro { padding:0 0 34px; }
+.page-intro .eyebrow { margin:0 0 8px; }
+.page-intro > p:last-child { color:var(--muted); font-size:16px; }
+.category { display:inline-block; margin-top:8px; padding:1px 9px; border:1.3px solid var(--line); border-radius:99px; color:var(--ink); font-size:13px; }
+.article-shell { padding:44px 0 100px; }
+.back-link { color:var(--ink); font-size:15px; }
+.article { width:min(100%, 680px); margin:44px auto 0; }
+.article-header { padding-bottom:6px; text-align:left; }
+.pane .article-header { min-height:104px; box-sizing:border-box; }
+.article-header h1 { margin:0; font-size:33.5px; font-weight:700; line-height:1.25; letter-spacing:.04em; }
+.article-meta { display:flex; gap:14px; margin:23px 0 0; font-size:18px; line-height:1.4; opacity:.6; }
+/* ── Markdown 內文的顯示方式 ─────────────────────── */
+.prose { padding:22px 0 30px; font-size:19.5px; line-height:1.75; }
+.pane .prose { padding-top:32px; font-size:21.5px; line-height:1.9; }
+.pane .prose p { margin-bottom:24px; }
+.prose > :first-child { margin-top:0; }
+.prose p { margin:0 0 20px; }
+.prose h2,.prose h3,.prose h4 { margin:40px 0 20px; font-weight:700; line-height:1.25; }
+.prose h2 { font-size:26px; }
+.prose h3 { font-size:22px; }
+.prose h4 { font-size:18px; }
+.prose strong { font-weight:700; }
+.prose ul,.prose ol { margin:0 0 20px; padding-left:32px; }
+.prose li { margin-bottom:6px; }
+.prose li > ul,.prose li > ol { margin:6px 0 0; }
+.prose blockquote { margin:0 0 16px; padding:8px 16px; background:rgba(0,0,0,.02); border-left:2.3px solid var(--line); color:#444950; }
+.prose blockquote > :last-child { margin-bottom:0; }
+.prose hr { height:1.3px; margin:24px 0; background:var(--line); border:0; }
+.prose code { padding:.1em .35em; background:#f6f7f8; border:1.3px solid var(--line); border-radius:4px; font-family:"Roboto Mono",ui-monospace,Consolas,monospace; font-size:.9em; letter-spacing:0; }
+.prose pre { margin:0 0 20px; padding:16px; overflow-x:auto; border-radius:6px; font-size:16px; line-height:1.6; letter-spacing:0; }
+.prose pre code { padding:0; background:none; border:0; font-size:inherit; }
+.prose table { display:block; width:max-content; max-width:100%; margin:0 0 20px; overflow-x:auto; border-collapse:collapse; }
+.prose th,.prose td { padding:10px 12px; border:1.3px solid var(--line); }
+.prose th { font-weight:700; }
+.prose tr:nth-child(2n) td { background:rgba(0,0,0,.03); }
+.prose img { max-width:100%; height:auto; }
+.backlinks a { color:var(--link); font-weight:700; text-decoration:none; }
+/* 內文連結：文字跟一般內文一樣，靠右上角的小問號表示「可以在右邊展開」 */
+.prose a { color:inherit; font-weight:inherit; text-decoration:none; }
+/* 還沒展開的站內連結：字底下一條細虛線；展開之後換成細框，虛線拿掉 */
+.prose a[href^="/"]:not(.is-open) { text-decoration:underline dashed #9aa1ab 1px; text-underline-offset:5px; }
+.prose a[href^="/"]::after { content:"?"; display:inline; position:relative; top:-.6em; margin:0 1px 0 2px; color:#8d949e; font-size:.66em; font-weight:700; line-height:1; letter-spacing:0; vertical-align:baseline; transition:color .15s ease; }
+.prose a[href^="/"]:hover::after,.prose a[href^="/"].is-open::after { color:var(--ink); }
+/* 連到站外的連結沒有問號，用底線表示 */
+.prose a:not([href^="/"]) { text-decoration:underline; text-decoration-color:#9aa1ab; text-underline-offset:3px; }
+.backlinks a:hover { text-decoration:underline; text-underline-offset:3px; }
+.prose a[href^="/"]:not(.is-open):hover { text-decoration-color:var(--ink); }
+.article-end { margin-top:14px; padding-top:24px; border-top:1.3px solid var(--line); color:var(--muted); text-align:center; font-size:16px; }
+.article-end p { margin:0; }
+.site-footer { display: flex; justify-content: space-between; gap: 18px; width: 100%; margin: auto 0 0; padding: 22px 32px 30px; border-top: 1.3px solid var(--line); color: var(--muted); font-size: 14px; }
+@media (max-width:620px) {
+  body { font-size:18px; padding:16px 0; }
+  .site-frame { width:calc(100% - 32px); min-height:calc(100vh - 32px); }
+  .site-header { min-height:74px; padding:12px 16px; }
+  .wordmark { font-size:23px; }
+  .site-header nav { gap:16px; font-size:16px; }
+  .home,.archive,.article-shell { width:calc(100% - 40px); }
+  .home { padding-top:54px; }
+  .welcome { padding-bottom:48px; }
+  .welcome-sprig { right:0; top:52px; font-size:72px; opacity:.55; }
+  .welcome-copy { position:relative; }
+  .post-row { grid-template-columns:1fr 20px; gap:3px 10px; padding:18px 2px; }
+  .post-row.no-date { grid-template-columns:1fr 24px; }
+.post-row time { grid-column:1; grid-row:1; }
+  .post-row > div { grid-column:1; grid-row:2; }
+  .post-row .row-arrow { grid-column:2; grid-row:2; }
+  .post-row h2,.post-row h3 { font-size:20px; }
+  .archive { padding-top:48px; }
+  .article-shell { padding-top:32px; }
+  .article { margin-top:32px; }
+  .prose { font-size:19.5px; }
+  .site-footer { padding:20px; flex-direction:column; gap:4px; }
+}
+
+/* ── 筆記目錄：類別可以展開成文章列表 ─────────────── */
+.note-tree { padding:14px 0 30px; }
+.note-group summary { display:flex; align-items:center; gap:12px; padding:9px 12px; border-radius:6px; color:#444950; font-size:20px; font-weight:700; cursor:pointer; list-style:none; user-select:none; }
+.note-group summary::-webkit-details-marker { display:none; }
+.note-group summary:hover { background:rgba(0,0,0,.05); }
+.note-group summary::after { content:""; width:8px; height:8px; margin-left:auto; border:solid var(--line); border-width:2.8px 2.8px 0 0; transform:rotate(45deg); transition:transform .15s ease; }
+.note-group[open] summary::after { transform:rotate(135deg); }
+.note-group-icon { width:24px; font-size:21px; font-weight:400; letter-spacing:0; text-align:center; }
+.note-group-count { color:#8d949e; font-size:15px; font-weight:400; }
+.note-group ul { margin:2px 0 10px; padding:0 0 0 36px; list-style:none; }
+.note-group li a { display:block; padding:7px 12px; border-radius:6px; color:var(--ink); font-size:19px; }
+.note-group li a:hover { background:rgba(0,0,0,.05); text-decoration:none; }
+.note-group li a.is-open { background:var(--link-soft); color:var(--link); font-weight:700; }
+
+/* ── 日記列表 ─────────────────────────────────── */
+.entry-list { padding:14px 0 30px; }
+.entry-list ul { margin:0; padding:0; list-style:none; }
+.entry-list a { display:block; padding:9px 12px; border-radius:6px; color:var(--ink); font-size:20px; }
+.entry-list a:hover { background:rgba(0,0,0,.05); text-decoration:none; }
+.entry-list a.is-open { background:var(--link-soft); }
+.entry-list a span { display:block; font-weight:700; }
+.entry-list time { display:block; margin-top:2px; font-size:15px; opacity:.6; }
+
+/* ── 筆記之間的連結 ─────────────────────────────── */
+/* 指向還沒寫的筆記：淡灰色的字，沒有底線也沒有問號（虛線底線留給「可以展開」的連結） */
+.wikilink-missing { color:#9aa1ab; cursor:help; }
+/* 已經在右邊展開的連結：用細框把字框起來（outline 不佔空間，開合時文字不會跳動） */
+.prose a.is-open { outline:1.3px solid var(--line); outline-offset:4px; border-radius:2px; }
+.backlinks a.is-open { background:var(--link-soft); }
+.backlinks { margin-top:8px; padding:26px 0 30px; border-top:1.3px solid var(--line); }
+.backlinks h2 { margin:0 0 14px; font-size:24px; font-weight:400; line-height:1.4; }
+.backlinks ul { margin:0; padding:0; list-style:none; display:grid; gap:8px; }
+.backlinks li { padding:0; }
+.backlinks a { color:#213f78; font-size:17.5px; font-weight:400; letter-spacing:.04em; }
+.backlinks p { margin:2px 0 0; color:var(--ink); font-size:15px; line-height:1.7; }
+.pane-spine,.pane-tools { display:none; }
+
+/* ── 底部的罌粟花田 ─────────────────────────────
+   圖是 public/poppy-field.svg（用 scripts/make-poppy-field.py 產生，左右可無縫銜接）。
+   桌面：固定在視窗底部、疊在所有頁面前面，滑鼠事件會穿過它；
+         每一頁底部留一段空白（--field-clear），內文捲到底時結尾會停在花的上方。
+   窄螢幕：不固定，花田長在整頁的最底下，跟著頁面一起捲。 */
+@media (min-width:900px) {
+  /* 花田高度跟著視窗高度走：大約佔 28%，最矮 220px、最高 340px */
+  :root { --field-h:clamp(220px, 28vh, 340px); --field-clear:calc(var(--field-h) - 40px); }
+  body::after { content:""; position:fixed; left:0; right:0; bottom:0; z-index:50; height:var(--field-h); background:url("/poppy-field.svg") repeat-x left bottom / auto var(--field-h); pointer-events:none; }
+}
+@media (max-width:899px) {
+  /* 窄螢幕的導覽列：放不下就換到第二行，項目本身不要被拆成兩行 */
+  .site-header { flex-wrap:wrap; gap:6px 22px; }
+  .site-header nav { gap:18px; }
+  .site-header nav a,.wordmark small { white-space:nowrap; }
+  .site-frame { padding-bottom:150px; background:#fff url("/poppy-field.svg") repeat-x left bottom / 900px 170px; }
+}
+
+/* ── 文章頁：往右展開的堆疊（桌面寬度才啟用） ───────
+   每一頁是一張白紙，紙和紙邊靠邊相連；整疊浮在碎花上。
+   放不下時，右邊的紙會滑到左邊的紙上面（部分重疊），
+   被蓋到只剩一條時，才換成直排標題的書脊。 */
+@media (min-width:900px) {
+  :root { --spine:60px; --nav-w:101px; --frame-inset:32px; --stack-pad:0px; --pane-gap:0px; --pane-w:clamp(960px, calc((100vw - 2 * var(--frame-inset) - 2px - var(--nav-w)) * .75), 1200px); }
+  /* 上方留白縮至原本的 0.6 倍 */
+  body.has-stack { height:100vh; padding:calc(var(--frame-inset) * 1.2) var(--frame-inset) var(--frame-inset); overflow:hidden; }
+  .has-stack .site-frame { flex-direction:row; width:100%; height:100%; min-height:0; overflow:hidden; background:transparent; border:0; box-shadow:none; }
+  .has-stack .site-header { flex:none; flex-direction:row; align-items:center; gap:34px; width:var(--nav-w); min-height:0; height:100%; padding:22px 0; background-color:#fff; background-image:linear-gradient(to bottom,var(--line),#fff),linear-gradient(to bottom,var(--line),#fff); background-origin:border-box; background-position:left top,right top; background-repeat:no-repeat; background-size:1.3px 100%; border:1.3px solid var(--line); border-left-color:transparent; border-right-color:transparent; writing-mode:vertical-rl; }
+  .has-stack .wordmark { gap:12px; letter-spacing:.12em; }
+  .has-stack .site-header nav { gap:26px; letter-spacing:.12em; }
+  .has-stack .site-header nav a[href$="rss.xml"] { text-combine-upright:all; letter-spacing:0; }
+  .has-stack .wordmark small { display:none; }
+  .has-stack .site-footer,.has-stack .back-link { display:none; }
+  .has-stack .article-shell { flex:1; width:auto; min-width:0; min-height:0; height:100%; margin:0; padding:0; }
+  .stack { height:100%; overflow-x:auto; overflow-y:hidden; scrollbar-width:thin; scrollbar-color:rgba(0,0,0,.3) transparent; }
+  /* 右邊多留半個畫面的空白，最後一頁才有辦法被捲到畫面正中央 */
+  .stack-track { display:flex; width:max-content; min-width:100%; height:100%; padding:var(--stack-pad); padding-right:max(var(--stack-pad), calc((100% - var(--pane-w)) / 2)); }
+  .pane { position:sticky; left:calc(var(--stack-pad) + var(--i,0) * var(--spine)); flex:none; width:var(--pane-w); height:100%; margin-left:var(--pane-gap); overflow:hidden; background-color:#fff; background-image:linear-gradient(to bottom,var(--line),#fff); background-origin:border-box; background-position:left top; background-repeat:no-repeat; background-size:1.3px 100%; border:solid var(--line); border-width:1.3px 0 1.3px 1.3px; border-left-color:transparent; transition:box-shadow .2s ease; }
+  .pane--narrow { width:330px; }
+  .pane--narrow .pane-body { padding:0 26px var(--field-clear); }
+  .pane--narrow .article-header { padding-left:12px; }
+  .pane:first-child { margin-left:0; border-left-width:0; background-image:none; }
+  .pane:last-child { border-right-width:1.3px; border-right-color:transparent; background-image:linear-gradient(to bottom,var(--line),#fff),linear-gradient(to bottom,var(--line),#fff); background-position:left top,right top; }
+  .pane:first-child:last-child { background-image:linear-gradient(to bottom,var(--line),#fff); background-position:right top; }
+  .pane.is-overlapping { box-shadow:-14px 0 26px rgba(0,0,0,.12); }
+  .pane-body { height:100%; padding:0 91px var(--field-clear); overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(0,0,0,.2) transparent; transition:opacity .2s ease; }
+  /* 文章排成直欄並至少撐滿這一頁的可見高度：文章短的時候，文末那句話會被推到最底、貼在花田上方；
+     文章長的時候它照常接在內文後面 */
+  .pane .article { display:flex; flex-direction:column; width:100%; min-height:calc(100% - 84px); margin:84px 0 0; }
+  .pane .article-end { display:none; }
+  .pane .article-header h1 { font-size:40px; }
+  .pane-spine { display:block; position:absolute; inset:0 auto 0 0; width:var(--spine); padding:22px 0 0; overflow:hidden; border:0; background:#fff; color:var(--ink); font:inherit; font-size:22px; line-height:var(--spine); letter-spacing:.06em; text-align:start; white-space:nowrap; writing-mode:vertical-rl; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s ease; }
+  /* 每一頁右上角的 ×：關掉這一頁（這一頁收成書脊時不顯示）。
+     要讓被蓋住或被切掉的頁完整露出來，直接點那一頁就可以 */
+  .pane-tools { display:contents; }
+  .pane-close { position:absolute; top:10px; right:12px; z-index:1; width:32px; height:32px; padding:0; border:0; border-radius:6px; background:transparent; color:#9aa1ab; font:inherit; font-size:26px; line-height:1; letter-spacing:0; text-align:center; cursor:pointer; transition:color .15s ease,background .15s ease; }
+  .pane-close:hover { background:rgba(0,0,0,.05); color:var(--ink); }
+  .pane--narrow .pane-close { top:8px; right:6px; }
+  .pane.is-collapsed .pane-tools { display:none; }
+  .pane.is-collapsed .pane-spine { opacity:1; pointer-events:auto; }
+  .pane.is-collapsed .pane-body { opacity:0; pointer-events:none; }
+  /* 關閉中：寬度縮到 0、同時淡出，右邊的頁會跟著往左滑過來 */
+  .pane.is-closing { width:0 !important; border-left-width:0; border-right-width:0; opacity:0; pointer-events:none; transition:width .3s cubic-bezier(.4,0,.2,1),opacity .24s ease; }
+  .pane.is-entering { animation:pane-in .3s ease both; }
+  @keyframes pane-in { from { opacity:0; transform:translateX(28px); } }
+}
+@media (prefers-reduced-motion:reduce) {
+  .pane.is-entering { animation:none; }
+  .pane,.pane-body,.pane-spine { transition:none; }
+}

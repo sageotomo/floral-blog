@@ -1,0 +1,15 @@
+---
+// 所有頁面都關掉之後的狀態：只有左側導覽列，其餘是背景。
+// 從這裡點導覽列的任何一項，就會重新開始一疊。
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="blog" stack>
+  <main class="article-shell">
+    <div class="stack" data-stack>
+      <div class="stack-track"></div>
+    </div>
+  </main>
+  <script>
+    import '../scripts/stack.ts';
+  </script>
+</BaseLayout>

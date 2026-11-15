@@ -1,0 +1,14 @@
+---
+// 網站的第一頁就是「關於我」，內容寫在 src/content/pages/about.md。
+import { getEntry, render } from 'astro:content';
+import StackShell from '../components/StackShell.astro';
+import Wikilinks from '../components/Wikilinks.astro';
+
+const about = await getEntry('pages', 'about');
+if (!about) throw new Error('找不到 src/content/pages/about.md');
+const { Content } = await render(about);
+---
+<StackShell paneKey="about" title={about.data.title} description={about.data.description}>
+  <header class="article-header"><h1>{about.data.title}</h1></header>
+  <div class="prose"><Wikilinks><Content /></Wikilinks></div>
+</StackShell>

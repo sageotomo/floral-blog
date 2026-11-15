@@ -1,0 +1,31 @@
+---
+// 日記與筆記共用的文章頁。
+import { render } from 'astro:content';
+import StackShell from './StackShell.astro';
+import Wikilinks from './Wikilinks.astro';
+import { KINDS, type Item } from '../lib/entries';
+
+interface Props { item: Item; backlinks: Item[] }
+const { item, backlinks } = Astro.props;
+const { Content } = await render(item.entry);
+const { pubDate } = item.entry.data;
+const dateLabel = pubDate && new Intl.DateTimeFormat('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' }).format(pubDate);
+const bodyText = item.entry.body
+  .replace(/```[\s\S]*?```/g, ' ')
+  .replace(/`[^`]*`/g, ' ')
+  .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2');
+const readingUnits = (bodyText.match(/[\u3400-\u9fff]/g) ?? []).length + (bodyText.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) ?? []).length;
+const readingMinutes = Math.max(1, Math.ceil(readingUnits / 300));
+---
+<StackShell paneKey={item.key} title={item.title} description={item.description || undefined} back={{ href: `/${item.kind}/`, label: KINDS[item.kind].back }}>
+  <header class="article-header">
+    <h1>{item.title}</h1>
+    <p class="article-meta">
+      {dateLabel && <time datetime={pubDate.toISOString()}>{dateLabel}</time>}
+      <span>閱讀約 {readingMinutes} 分鐘</span>
+    </p>
+  </header>
+  <div class="prose"><Wikilinks><Content /></Wikilinks></div>
+  {/* 「連到這裡的筆記」（反向連結）目前不顯示；資料仍在 backlinks 這個 prop 裡，要恢復時把那一區放回來即可 */}
+  <footer class="article-end"><p>明天還要一起嘗試把石頭推上山頂嗎</p></footer>
+</StackShell>

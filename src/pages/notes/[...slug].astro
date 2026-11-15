@@ -1,0 +1,8 @@
+---
+import StackPage from '../../components/StackPage.astro';
+import { getPathsFor } from '../../lib/entries';
+
+export const getStaticPaths = () => getPathsFor('notes');
+const { item, backlinks } = Astro.props;
+---
+<StackPage item={item} backlinks={backlinks} />
