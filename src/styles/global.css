@@ -200,6 +200,12 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
 .backlinks p { margin:2px 0 0; color:var(--ink); font-size:15.6px; line-height:1.7; }
 .pane-spine,.pane-tools { display:none; }
 /* 游標的蒲公英拖尾（src/scripts/dandelion-trail.ts）：一張蓋在最上層、不擋滑鼠的透明畫布 */
+/* 紙角捲起（src/scripts/page-curl.ts）：疊在每張紙上的陰影和紙緣線，切口外的部分會被 clip-path 切掉 */
+.pane-curl { position:absolute; inset:0; z-index:2; width:100%; height:100%; pointer-events:none; overflow:visible; }
+.pane-curl-shade { stroke:rgba(70,55,40,.20); }
+.pane-curl-light { stroke:rgba(110,95,80,.28); }
+:root[data-theme="dark"] .pane-curl-shade { stroke:rgba(0,0,0,.55); }
+:root[data-theme="dark"] .pane-curl-light { stroke:rgba(255,250,240,.22); }
 /* 清風拂過（src/scripts/wind-cloth.ts）：只在風吹的那兩秒多套上布料濾鏡 */
 .is-windy { filter:url(#wind-cloth); }
 .dandelion-trail { position:fixed; inset:0; z-index:1000; width:100%; height:100%; pointer-events:none; }
