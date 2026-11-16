@@ -19,6 +19,8 @@ if (!reducedMotion.matches) {
   const DISPLACE = 22;             // 紙被推歪的程度（像素），越大起伏越明顯、字也越歪
   const SHADE = 0.45;              // 皺褶明暗的強度（0～1.5）
   const SHEEN = 0.09;              // 布面光澤的強度（0 就是沒有反光）
+  const DAY_SHADOW = 0.5;          // 白天模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小暗面越淡）
+  const NIGHT_LIGHT = 0.5;         // 夜間模式：皺褶亮面和光澤的亮度（1 = 跟 SHADE、SHEEN 一樣，越小越暗）
   const BAND = 0.36;               // 皺褶那一段有多寬（頁面寬度的幾倍）
   const FOLD = [190, 520];         // 皺褶的間距（像素），小 = 細碎的波紋，大 = 大片的起伏
   const SLANT = 0.12;              // 風的前緣斜多少（頁面寬度的幾倍），0 就是一條直的線
@@ -56,8 +58,10 @@ if (!reducedMotion.matches) {
   // 地形 = 幾道不同間距的波疊在一起，每道波沿著直向再微微扭動，像布被風吹出來的皺褶。
   const SPAN = 5, CENTER = 2.5;
   let cachedKey = '';
-  const buildMaps = (W: number, H: number) => {
-    const key = `${Math.round(W)}x${Math.round(H)}`;
+  const buildMaps = (W: number, H: number, dark: boolean) => {
+    const key = `${Math.round(W)}x${Math.round(H)}-${dark ? 'dark' : 'light'}`;
+    // 白天只把暗面調淡、夜間只把亮面調暗
+    const darkSide = dark ? 1 : DAY_SHADOW, lightSide = dark ? NIGHT_LIGHT : 1;
     if (key === cachedKey) return;
     cachedKey = key;
     const w = Math.max(8, Math.round(W * SPAN * RES)), h = Math.max(8, Math.round(H * 1.1 * RES));
@@ -119,7 +123,8 @@ if (!reducedMotion.matches) {
         const diffuse = (nx * L[0] + ny * L[1] + L[2]) / nl;
         const spec = Math.pow(Math.max(0, (nx * Hv[0] + ny * Hv[1] + Hv[2]) / nl), SPEC_EXP);
         // 明暗圖：128 = 跟平的時候一樣亮；比 128 亮是迎光面、暗是背光面
-        const sv = 128 + 127 * Math.max(-1, Math.min(1, (diffuse - flatDiffuse) * 1.6));
+        const lit = (diffuse - flatDiffuse) * 1.6;
+        const sv = 128 + 127 * Math.max(-1, Math.min(1, lit * (lit < 0 ? darkSide : lightSide)));
         sd[i] = sd[i + 1] = sd[i + 2] = sv; sd[i + 3] = 255;
         // 反光圖：只留下比平面更亮的那一點點光澤
         const pv = 255 * Math.max(0, Math.min(1, (spec - flatSpec) * 2));
@@ -144,7 +149,8 @@ if (!reducedMotion.matches) {
     const rect = frame.getBoundingClientRect();
     const W = rect.width, H = rect.height;
     if (W < 10 || H < 10) return;
-    buildMaps(W, H);
+    const dark = document.documentElement.dataset.theme === 'dark';
+    buildMaps(W, H, dark);
     blowing = true;
     // 地形圖的 x：一開始皺褶在頁面左邊外面，結束時已經吹出右邊外面
     const startX = -(CENTER + BAND * 1.8) * W, endX = -(CENTER - 1 - BAND * 1.8) * W;
@@ -154,7 +160,7 @@ if (!reducedMotion.matches) {
     shade.setAttribute('k1', String(2 * SHADE));
     shade.setAttribute('k2', String(1 - SHADE));
     // 光澤：再加上一點反光
-    sheen.setAttribute('k3', String(SHEEN));
+    sheen.setAttribute('k3', String(SHEEN * (dark ? NIGHT_LIGHT : 1)));
     frame.classList.add('is-windy');
     const t0 = performance.now();
     const step = (now: number) => {
