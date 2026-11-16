@@ -16,9 +16,10 @@ if (reducedMotion.matches) windButtons.forEach((button) => { button.hidden = tru
 if (!reducedMotion.matches) {
   // ── 可以調整的數值 ─────────────────────────────
   const DURATION = 4.4;            // 一陣風從左吹到右要幾秒
-  const DISPLACE = 22;             // 紙被推歪的程度（像素），越大起伏越明顯、字也越歪
-  const SHADE = 0.45;              // 皺褶明暗的強度（0～1.5）
-  const SHEEN = 0.09;              // 布面光澤的強度（0 就是沒有反光）
+  const DISPLACE = 36;             // 紙被推歪的程度（像素），越大起伏越明顯、字也越歪
+  const RIPPLE = { len: 130, amp: 0.6 }; // 只推歪、不打光的細波紋：間距（像素）和強度，讓字和線條像布一樣彎來彎去
+  const SHADE = 0.3;               // 皺褶明暗的強度（0～1.5）
+  const SHEEN = 0.06;              // 布面光澤的強度（0 就是沒有反光）
   const DAY_SHADOW = 0.33;         // 白天模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小暗面越淡）
   const NIGHT_LIGHT = 0.12;        // 夜間模式：皺褶亮面和光澤的亮度（1 = 跟 SHADE、SHEEN 一樣，越小越暗）
   const NIGHT_SHADOW = 0.65;       // 夜間模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小越淡）
@@ -78,7 +79,7 @@ if (!reducedMotion.matches) {
     }));
     const ampSum = waves.reduce((s, v) => s + v.amp, 0);
     // 先算每一格的高度（-1～1），再由高度算出推歪量和打光
-    const hgtGrid = new Float32Array(w * h), hgt2Grid = new Float32Array(w * h);
+    const hgtGrid = new Float32Array(w * h), hgt2Grid = new Float32Array(w * h), ripGrid = new Float32Array(w * h);
     const bandHalf = BAND * (dark ? NIGHT_BAND : 1) * W;
     for (let y = 0; y < h; y++) {
       const py = y / RES - H * 0.05;                      // 這一列在頁面上的 y（像素）
@@ -98,6 +99,8 @@ if (!reducedMotion.matches) {
         }
         hgtGrid[y * w + x] = (hgt / ampSum) * env;
         hgt2Grid[y * w + x] = (hgt2 / ampSum) * env;
+        // 細波紋：沿著橫向一上一下，讓一行行的字和橫線彎成波浪；只拿來推歪，不影響明暗
+        ripGrid[y * w + x] = Math.sin((2 * Math.PI * px) / RIPPLE.len + 1.4 * Math.sin((2 * Math.PI * py) / 420)) * env;
       }
     }
     // 光的方向、反光的半程向量（光和視線的中間）
@@ -115,8 +118,9 @@ if (!reducedMotion.matches) {
         const k = y * w + x, i = k * 4;
         const hg = hgtGrid[k];
         // 推歪用的圖：R = 左右推、G = 上下推（上下推得比較少，像紙被掀起一點點）
-        dd[i] = 128 + 127 * hg;
-        dd[i + 1] = 128 + 127 * hgt2Grid[k] * 0.45;
+        const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+        dd[i] = 128 + 127 * clamp(hg * 0.8 + ripGrid[k] * RIPPLE.amp * 0.35);
+        dd[i + 1] = 128 + 127 * clamp(hgt2Grid[k] * 0.35 + ripGrid[k] * RIPPLE.amp);
         dd[i + 2] = 128; dd[i + 3] = 255;
         // 打光：用左右、上下相鄰格子的高度差算出這一點的斜面方向
         const xl = hgtGrid[y * w + Math.max(0, x - 1)], xr = hgtGrid[y * w + Math.min(w - 1, x + 1)];
