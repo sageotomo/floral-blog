@@ -15,7 +15,7 @@ if (reducedMotion.matches) windButtons.forEach((button) => { button.hidden = tru
 
 if (!reducedMotion.matches) {
   // ── 可以調整的數值 ─────────────────────────────
-  const DURATION = 5.25;           // 一陣風從左吹到右要幾秒
+  const DURATION = 4.4;            // 一陣風從左吹到右要幾秒
   const DISPLACE = 22;             // 紙被推歪的程度（像素），越大起伏越明顯、字也越歪
   const SHADE = 0.45;              // 皺褶明暗的強度（0～1.5）
   const SHEEN = 0.09;              // 布面光澤的強度（0 就是沒有反光）
