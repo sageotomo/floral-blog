@@ -21,6 +21,7 @@ if (!reducedMotion.matches) {
   const SHEEN = 0.09;              // 布面光澤的強度（0 就是沒有反光）
   const DAY_SHADOW = 0.33;         // 白天模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小暗面越淡）
   const NIGHT_LIGHT = 0.18;        // 夜間模式：皺褶亮面和光澤的亮度（1 = 跟 SHADE、SHEEN 一樣，越小越暗）
+  const NIGHT_FOLD = 1.2;          // 夜間模式：皺褶的間距是白天的幾倍（越大波紋越寬、越疏）
   const BAND = 0.36;               // 皺褶那一段有多寬（頁面寬度的幾倍）
   const FOLD = [190, 520];         // 皺褶的間距（像素），小 = 細碎的波紋，大 = 大片的起伏
   const SLANT = 0.12;              // 風的前緣斜多少（頁面寬度的幾倍），0 就是一條直的線
@@ -66,7 +67,7 @@ if (!reducedMotion.matches) {
     cachedKey = key;
     const w = Math.max(8, Math.round(W * SPAN * RES)), h = Math.max(8, Math.round(H * 1.1 * RES));
     const waves = Array.from({ length: 3 }, (_, i) => ({
-      len: FOLD[1] - (FOLD[1] - FOLD[0]) * (i / 2) * (0.8 + Math.random() * 0.4),
+      len: (FOLD[1] - (FOLD[1] - FOLD[0]) * (i / 2) * (0.8 + Math.random() * 0.4)) * (dark ? NIGHT_FOLD : 1),
       phase: Math.random() * Math.PI * 2,
       amp: 1 - i * 0.3,
       wobble: 0.5 + Math.random() * 0.8,
