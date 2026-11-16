@@ -1,0 +1,14 @@
+---
+// 「這個網站是怎麼做的」（colophon）：用到的工具、字型、特效和靈感來源，內容寫在 src/content/pages/colophon.md。
+import { getEntry, render } from 'astro:content';
+import StackShell from '../components/StackShell.astro';
+import Wikilinks from '../components/Wikilinks.astro';
+
+const colophon = await getEntry('pages', 'colophon');
+if (!colophon) throw new Error('找不到 src/content/pages/colophon.md');
+const { Content } = await render(colophon);
+---
+<StackShell paneKey="colophon" title={colophon.data.title} description={colophon.data.description}>
+  <header class="article-header"><h1>{colophon.data.title}</h1></header>
+  <div class="prose"><Wikilinks><Content /></Wikilinks></div>
+</StackShell>

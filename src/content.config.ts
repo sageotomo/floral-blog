@@ -23,7 +23,7 @@ const notes = defineCollection({
   }),
 });
 
-// 單頁：目前只有「關於我」
+// 單頁：「關於我」和「這個網站是怎麼做的」
 const pages = defineCollection({
   loader: glob({ base: './src/content/pages', pattern: '**/*.md' }),
   schema: z.object({ title: z.string(), description: z.string().optional() }),

@@ -15,13 +15,14 @@ if (stack && track) {
   const panes = () => [...track.querySelectorAll<HTMLElement>('[data-pane]')];
   const cssPx = (name: string) => parseFloat(getComputedStyle(stack).getPropertyValue(name)) || 0;
 
-  /** 連結網址 → 頁面識別（about、blog、notes、blog/檔名、notes/檔名）；其他連結回傳 null。 */
+  /** 連結網址 → 頁面識別（about、colophon、blog、notes、blog/檔名、notes/檔名）；其他連結回傳 null。 */
   const slugOf = (href: string) => {
     const url = new URL(href, location.href);
     if (url.origin !== location.origin) return null;
     const path = url.pathname.replace(/\/$/, '');
     if (path === '') return 'about'; // 網站第一頁＝關於我
     if (path === '/notes' || path === '/blog') return path.slice(1); // 筆記目錄、日記列表本身也是一頁
+    if (path === '/colophon') return 'colophon'; // 這個網站是怎麼做的（src/pages/colophon.astro）
     const match = path.match(/^\/(blog|notes)\/(.+)$/);
     return match ? `${match[1]}/${decodeURIComponent(match[2])}` : null;
   };
