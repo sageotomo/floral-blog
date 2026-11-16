@@ -200,7 +200,7 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
 .backlinks p { margin:2px 0 0; color:var(--ink); font-size:15.6px; line-height:1.7; }
 .pane-spine,.pane-tools { display:none; }
 /* 游標的蒲公英拖尾（src/scripts/dandelion-trail.ts）：一張蓋在最上層、不擋滑鼠的透明畫布 */
-/* 清風拂過（src/scripts/wind-cloth.ts）：只在風吹的那兩秒多套上布料濾鏡 */
+/* 清風拂過（src/scripts/wind-cloth.ts）：只扭動文字與導覽內容，卡片紙面維持原透明度 */
 .is-windy { filter:url(#wind-cloth); }
 .dandelion-trail { position:fixed; inset:0; z-index:1000; width:100%; height:100%; pointer-events:none; }
 
@@ -271,13 +271,10 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
    再把透上來的東西模糊掉——看得出後面有東西，但不會干擾閱讀 */
 :root { --sheet-alpha: 86%; --sheet-blur: 18px; }
 body { background-color:transparent; } /* 讓最底下的照片透得出來 */
-/* 不管螢幕是橫是直，整張照片都完整看得到：
-   橫螢幕：照片高度貼齊視窗，左右一張正、一張鏡像地接下去（backdrop-x.jpg），接縫才連得起來；
-   直螢幕：寬度貼齊視窗，上下一張正、一張上下翻轉地接下去（backdrop-y.jpg）。
-   round 會把每一張微微拉寬（或拉高），讓畫面剛好擺得下整數張，不會有被切掉半張的照片 */
-body::before { content:""; position:fixed; inset:0; z-index:-1; background:url(/backdrop-x.jpg) left top / auto 100% round no-repeat; pointer-events:none; }
+/* 依螢幕方向重複平鋪背景；不使用 round，避免為了填滿視窗而改變原圖比例。 */
+body::before { content:""; position:fixed; inset:0; z-index:-1; background:url(/backdrop-x.jpg) left top / auto 100% repeat-x; pointer-events:none; }
 @media (orientation:portrait) {
-  body::before { background:url(/backdrop-y.jpg) left top / 100% auto no-repeat round; }
+  body::before { background:url(/backdrop-y.jpg) left top / 100% auto repeat-y; }
 }
 :root[data-theme="dark"] body::before { filter:brightness(.38) saturate(.8); }
 .site-frame { background:color-mix(in srgb, var(--paper) var(--sheet-alpha), transparent); -webkit-backdrop-filter:blur(var(--sheet-blur)) saturate(1.1); backdrop-filter:blur(var(--sheet-blur)) saturate(1.1); }

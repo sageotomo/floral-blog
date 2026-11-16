@@ -2,7 +2,7 @@
 // 皺褶帶著光影從左往右推過去，風過之後紙又變回平的。
 //
 // 做法：頁面維持真正的 HTML（字可以選、連結可以點），只在風吹的那兩秒多，
-// 把一個 SVG 濾鏡套到 .site-frame 上：
+// 把 SVG 濾鏡套到文字內容上，避免扭動半透明紙張和底圖：
 //   1. 先用 JS 畫一張「皺褶地形圖」（很寬的一條，只有中間一段有皺褶，兩邊是平的）
 //   2. feDisplacementMap 依地形把畫面推歪一點 → 紙的起伏
 //   3. 同一張地形先用 JS 算好打光（亮面、暗面、布的反光），做成兩張明暗圖，疊在畫面上
@@ -156,6 +156,10 @@ if (!reducedMotion.matches) {
     const rect = frame.getBoundingClientRect();
     const W = rect.width, H = rect.height;
     if (W < 10 || H < 10) return;
+    const targets = Array.from(frame.querySelectorAll<HTMLElement>('.pane-body, .site-header > *, .home, .archive'));
+    const articleShell = frame.querySelector<HTMLElement>('.article-shell');
+    if (articleShell && !articleShell.querySelector('.pane')) targets.push(articleShell);
+    if (!targets.length) targets.push(frame);
     const dark = document.documentElement.dataset.theme === 'dark';
     buildMaps(W, H, dark);
     blowing = true;
@@ -169,13 +173,13 @@ if (!reducedMotion.matches) {
     shade.setAttribute('k2', String(1 - SHADE));
     // 光澤：再加上一點反光
     sheen.setAttribute('k3', String(SHEEN * (dark ? NIGHT_LIGHT : 1)));
-    frame.classList.add('is-windy');
+    targets.forEach((target) => target.classList.add('is-windy'));
     const t0 = performance.now();
     const step = (now: number) => {
       const p = Math.min(1, (now - t0) / 1000 / DURATION);
       setX(startX + (endX - startX) * ease(p));
       if (p < 1) requestAnimationFrame(step);
-      else { frame.classList.remove('is-windy'); blowing = false; }
+      else { targets.forEach((target) => target.classList.remove('is-windy')); blowing = false; }
     };
     requestAnimationFrame(step);
   };
