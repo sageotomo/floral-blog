@@ -156,7 +156,6 @@ if (!reducedMotion.matches) {
     // 光澤：再加上一點反光
     sheen.setAttribute('k3', String(SHEEN));
     frame.classList.add('is-windy');
-    window.dispatchEvent(new Event('wind-gust')); // 讓紙角（src/scripts/page-curl.ts）也一起被吹起來
     const t0 = performance.now();
     const step = (now: number) => {
       const p = Math.min(1, (now - t0) / 1000 / DURATION);
