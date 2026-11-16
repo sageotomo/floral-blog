@@ -267,6 +267,18 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
   .pane.is-entering { animation:pane-in .3s ease both; }
   @keyframes pane-in { from { opacity:0; transform:translateX(28px); } }
 }
+/* 背景照片＋半透明的紙：照片放在最底下（public/backdrop.jpg），每張紙只帶一點點透明，
+   再把透上來的東西模糊掉——看得出後面有東西，但不會干擾閱讀 */
+:root { --sheet-alpha: 86%; --sheet-blur: 18px; }
+body { background-color:transparent; } /* 讓最底下的照片透得出來 */
+body::before { content:""; position:fixed; inset:0; z-index:-1; background:url(/backdrop.jpg) center 45% / cover no-repeat; pointer-events:none; }
+:root[data-theme="dark"] body::before { filter:brightness(.38) saturate(.8); }
+.site-frame { background:color-mix(in srgb, var(--paper) var(--sheet-alpha), transparent); -webkit-backdrop-filter:blur(var(--sheet-blur)) saturate(1.1); backdrop-filter:blur(var(--sheet-blur)) saturate(1.1); }
+@media (min-width:900px) {
+  .has-stack .site-frame { background:transparent; -webkit-backdrop-filter:none; backdrop-filter:none; }
+  .has-stack .site-header,
+  .pane { background:color-mix(in srgb, var(--paper) var(--sheet-alpha), transparent); -webkit-backdrop-filter:blur(var(--sheet-blur)) saturate(1.1); backdrop-filter:blur(var(--sheet-blur)) saturate(1.1); }
+}
 @media (prefers-reduced-motion:reduce) {
   .pane.is-entering { animation:none; }
   .pane,.pane-body,.pane-spine { transition:none; }
