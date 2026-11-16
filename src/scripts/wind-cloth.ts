@@ -21,6 +21,7 @@ if (!reducedMotion.matches) {
   const SHEEN = 0.09;              // 布面光澤的強度（0 就是沒有反光）
   const DAY_SHADOW = 0.33;         // 白天模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小暗面越淡）
   const NIGHT_LIGHT = 0.18;        // 夜間模式：皺褶亮面和光澤的亮度（1 = 跟 SHADE、SHEEN 一樣，越小越暗）
+  const NIGHT_BAND = 1.5;          // 夜間模式：一陣風掃過的範圍（皺褶那一段的寬度）是白天的幾倍
   const NIGHT_FOLD = 1.56;         // 夜間模式：皺褶的間距是白天的幾倍（越大波紋越寬、越疏）
   const BAND = 0.36;               // 皺褶那一段有多寬（頁面寬度的幾倍）
   const FOLD = [190, 520];         // 皺褶的間距（像素），小 = 細碎的波紋，大 = 大片的起伏
@@ -77,7 +78,7 @@ if (!reducedMotion.matches) {
     const ampSum = waves.reduce((s, v) => s + v.amp, 0);
     // 先算每一格的高度（-1～1），再由高度算出推歪量和打光
     const hgtGrid = new Float32Array(w * h), hgt2Grid = new Float32Array(w * h);
-    const bandHalf = BAND * W;
+    const bandHalf = BAND * (dark ? NIGHT_BAND : 1) * W;
     for (let y = 0; y < h; y++) {
       const py = y / RES - H * 0.05;                      // 這一列在頁面上的 y（像素）
       const center = CENTER * W + SLANT * W * (py / H - 0.5); // 風的前緣斜斜的
@@ -154,7 +155,8 @@ if (!reducedMotion.matches) {
     buildMaps(W, H, dark);
     blowing = true;
     // 地形圖的 x：一開始皺褶在頁面左邊外面，結束時已經吹出右邊外面
-    const startX = -(CENTER + BAND * 1.8) * W, endX = -(CENTER - 1 - BAND * 1.8) * W;
+    const band = BAND * (dark ? NIGHT_BAND : 1);
+    const startX = -(CENTER + band * 1.8) * W, endX = -(CENTER - 1 - band * 1.8) * W;
     const setX = (x: number) => maps.forEach((el) => el.setAttribute('x', String(x)));
     setX(startX);
     // 明暗：原圖 × (1 + SHADE × (明暗圖 − 0.5) × 2)，明暗圖是 0.5 的地方就跟原本一樣
