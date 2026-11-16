@@ -14,16 +14,16 @@ const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 if (!reducedMotion.matches && finePointer.matches && document.body.classList.contains('has-stack')) {
   // ── 可以調整的數值 ─────────────────────────────
   const REST = 0.16;               // 平常紙角翹起的程度（0 = 完全平，1 = 捲到最高）
-  const CURL = { x: 200, y: 280 }; // 翻到最大時，摺線在底邊、右邊各離角落多少像素
+  const CURL = { x: 480, y: 800 }; // 翻到最大時，摺線在底邊、右邊各離角落多少像素（紙不夠大時最多到 9 成）
   const ROLL = 0.78;               // 紙背翻過來的長度（1 = 像摺紙一樣整塊攤平，越小越像捲成圓筒）
-  const REACH = 260;               // 滑鼠離右下角多近開始讓紙角捲起來（像素）
+  const REACH = 420;               // 滑鼠離右下角多近開始讓紙角捲起來（像素）
   const INTRO = 0.62;              // 新打開的一頁，先翹到多高再落定
   const STIFF = 90, DAMP = 13;     // 彈簧：越硬越快到位、阻尼越大越不會晃
 
   const NS = 'http://www.w3.org/2000/svg';
   const OUT = 80; // clip-path 往外多留的空間，讓紙原本的陰影不會被切掉
 
-  type Curl = { pane: HTMLElement; c: number; v: number; born: number; svg: SVGSVGElement; shadow: SVGPathElement; flap: SVGPathElement; grad: SVGLinearGradientElement; shown: boolean };
+  type Curl = { pane: HTMLElement; c: number; v: number; born: number; svg: SVGSVGElement; shadow: SVGPathElement; flap: SVGPathElement; grad: SVGLinearGradientElement; blur: SVGElement; shown: boolean };
   const curls = new Map<HTMLElement, Curl>();
   let mx = -1e5, my = -1e5;
   let seq = 0;
@@ -50,14 +50,14 @@ if (!reducedMotion.matches && finePointer.matches && document.body.classList.con
     curls.set(pane, {
       pane, c: 0, v: 0, born: performance.now() + curls.size * 120, svg,
       shadow: svg.querySelector('.pane-curl-shadow')!, flap: svg.querySelector('.pane-curl-flap')!,
-      grad: svg.querySelector('linearGradient')!, shown: false,
+      grad: svg.querySelector('linearGradient')!, blur: svg.querySelector('feGaussianBlur')!, shown: false,
     });
     start();
   };
 
   const draw = (k: Curl) => {
     const W = k.pane.offsetWidth, H = k.pane.offsetHeight;
-    const b = CURL.x * k.c, a = CURL.y * k.c;
+    const b = Math.min(CURL.x, W * 0.9) * k.c, a = Math.min(CURL.y, H * 0.9) * k.c;
     if (a < 0.5) {
       if (k.shown) { k.pane.style.clipPath = ''; k.svg.style.display = 'none'; k.shown = false; }
       return;
@@ -84,6 +84,7 @@ if (!reducedMotion.matches && finePointer.matches && document.body.classList.con
     const sx = (T[0] - F[0]) * 0.12, sy = (T[1] - F[1]) * 0.12;
     k.shadow.setAttribute('d', flap);
     k.shadow.setAttribute('transform', `translate(${sx} ${sy})`);
+    k.blur.setAttribute('stdDeviation', String(4 + 0.035 * Math.max(a, b))); // 紙角翻得越大，影子越柔
     k.grad.setAttribute('x1', String(F[0])); k.grad.setAttribute('y1', String(F[1]));
     k.grad.setAttribute('x2', String(T[0])); k.grad.setAttribute('y2', String(T[1]));
     k.shown = true;
