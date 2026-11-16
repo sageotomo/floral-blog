@@ -52,6 +52,9 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
 .seed-toggle:hover { opacity:.8; }
 .seed-toggle[aria-pressed="true"]:hover { opacity:1; }
 .seed-toggle[hidden] { display:none; }
+/* 風的按鈕：按一下吹一陣風（src/scripts/wind-cloth.ts） */
+.wind-toggle { margin-left:0; }
+.wind-toggle[hidden] { display:none; }
 .seed-icon { display:block; width:1em; height:1em; }
 .wordmark { display:flex; align-items:center; gap:10px; font-size:26px; font-weight:700; letter-spacing:.04em; line-height:1.1; }
 .wordmark small { display:block; margin-top:5px; font-weight:400; color:var(--muted); font-size:12.48px; line-height:1.2; letter-spacing:.22em; }

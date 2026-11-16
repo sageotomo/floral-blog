@@ -1,4 +1,4 @@
-// 清風拂過：每隔一段時間，一陣風從左邊吹過整個頁面，紙張像布一樣起伏、
+// 清風拂過：按一下導覽列上的風的按鈕，一陣風就從左邊吹過整個頁面，紙張像布一樣起伏、
 // 皺褶帶著光影從左往右推過去，風過之後紙又變回平的。
 //
 // 做法：頁面維持真正的 HTML（字可以選、連結可以點），只在風吹的那兩秒多，
@@ -7,14 +7,14 @@
 //   2. feDisplacementMap 依地形把畫面推歪一點 → 紙的起伏
 //   3. 同一張地形先用 JS 算好打光（亮面、暗面、布的反光），做成兩張明暗圖，疊在畫面上
 //   4. 地形圖每一格往右挪 → 皺褶那一段從左邊掃到右邊，掃過去之後畫面就是原本平的樣子
-// 系統開了「減少動態效果」就不吹；分頁在背景時也不吹。
+// 系統開了「減少動態效果」就不吹，風的按鈕也藏起來。
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const windButtons = document.querySelectorAll<HTMLButtonElement>('[data-wind-button]');
+if (reducedMotion.matches) windButtons.forEach((button) => { button.hidden = true; });
 
 if (!reducedMotion.matches) {
   // ── 可以調整的數值 ─────────────────────────────
-  const FIRST_GUST = 5;            // 打開頁面幾秒後吹第一陣風
-  const INTERVAL = [35, 60];       // 之後每隔幾秒吹一次（隨機）
   const DURATION = 2.6;            // 一陣風從左吹到右要幾秒
   const DISPLACE = 22;             // 紙被推歪的程度（像素），越大起伏越明顯、字也越歪
   const SHADE = 0.75;              // 皺褶明暗的強度（0～1.5）
@@ -140,7 +140,7 @@ if (!reducedMotion.matches) {
   const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
   const gust = () => {
     const frame = document.querySelector<HTMLElement>('.site-frame');
-    if (!frame || blowing || document.hidden) return;
+    if (!frame || blowing) return;
     const rect = frame.getBoundingClientRect();
     const W = rect.width, H = rect.height;
     if (W < 10 || H < 10) return;
@@ -166,13 +166,8 @@ if (!reducedMotion.matches) {
     requestAnimationFrame(step);
   };
 
-  // ── 排程 ─────────────────────────────────────
-  let timer = 0;
-  const schedule = (sec: number) => {
-    clearTimeout(timer);
-    timer = window.setTimeout(() => { gust(); schedule(INTERVAL[0] + Math.random() * (INTERVAL[1] - INTERVAL[0])); }, sec * 1000);
-  };
-  schedule(FIRST_GUST);
-  // 方便測試：在瀏覽器的 console 打 blowWind() 就會立刻吹一陣
+  // ── 按鈕 ─────────────────────────────────────
+  windButtons.forEach((button) => button.addEventListener('click', gust));
+  // 方便測試：在瀏覽器的 console 打 blowWind() 也會吹一陣
   (window as unknown as { blowWind: () => void }).blowWind = gust;
 }
