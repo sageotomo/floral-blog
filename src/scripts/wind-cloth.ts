@@ -20,7 +20,8 @@ if (!reducedMotion.matches) {
   const SHADE = 0.45;              // 皺褶明暗的強度（0～1.5）
   const SHEEN = 0.09;              // 布面光澤的強度（0 就是沒有反光）
   const DAY_SHADOW = 0.33;         // 白天模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小暗面越淡）
-  const NIGHT_LIGHT = 0.18;        // 夜間模式：皺褶亮面和光澤的亮度（1 = 跟 SHADE、SHEEN 一樣，越小越暗）
+  const NIGHT_LIGHT = 0.12;        // 夜間模式：皺褶亮面和光澤的亮度（1 = 跟 SHADE、SHEEN 一樣，越小越暗）
+  const NIGHT_SHADOW = 0.65;       // 夜間模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小越淡）
   const NIGHT_BAND = 1.5;          // 夜間模式：一陣風掃過的範圍（皺褶那一段的寬度）是白天的幾倍
   const NIGHT_FOLD = 1.56;         // 夜間模式：皺褶的間距是白天的幾倍（越大波紋越寬、越疏）
   const BAND = 0.36;               // 皺褶那一段有多寬（頁面寬度的幾倍）
@@ -63,7 +64,7 @@ if (!reducedMotion.matches) {
   const buildMaps = (W: number, H: number, dark: boolean) => {
     const key = `${Math.round(W)}x${Math.round(H)}-${dark ? 'dark' : 'light'}`;
     // 白天只把暗面調淡、夜間只把亮面調暗
-    const darkSide = dark ? 1 : DAY_SHADOW, lightSide = dark ? NIGHT_LIGHT : 1;
+    const darkSide = dark ? NIGHT_SHADOW : DAY_SHADOW, lightSide = dark ? NIGHT_LIGHT : 1;
     if (key === cachedKey) return;
     cachedKey = key;
     const w = Math.max(8, Math.round(W * SPAN * RES)), h = Math.max(8, Math.round(H * 1.1 * RES));
