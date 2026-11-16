@@ -14,7 +14,7 @@ const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 if (!reducedMotion.matches && finePointer.matches && document.body.classList.contains('has-stack')) {
   // ── 可以調整的數值 ─────────────────────────────
   const REST = 0.16;               // 平常紙角翹起的程度（0 = 完全平，1 = 捲到最高）
-  const CURL = { x: 230, y: 96 };  // 翻到最大時，摺線在底邊、右邊各離角落多少像素（底邊長、右邊短，紙角往左上翻）
+  const CURL = { x: 200, y: 280 }; // 翻到最大時，摺線在底邊、右邊各離角落多少像素
   const ROLL = 0.78;               // 紙背翻過來的長度（1 = 像摺紙一樣整塊攤平，越小越像捲成圓筒）
   const REACH = 260;               // 滑鼠離右下角多近開始讓紙角捲起來（像素）
   const INTRO = 0.62;              // 新打開的一頁，先翹到多高再落定
