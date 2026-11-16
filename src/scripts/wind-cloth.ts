@@ -15,12 +15,12 @@ if (reducedMotion.matches) windButtons.forEach((button) => { button.hidden = tru
 
 if (!reducedMotion.matches) {
   // ── 可以調整的數值 ─────────────────────────────
-  const DURATION = 4.2;            // 一陣風從左吹到右要幾秒
+  const DURATION = 5.25;           // 一陣風從左吹到右要幾秒
   const DISPLACE = 22;             // 紙被推歪的程度（像素），越大起伏越明顯、字也越歪
   const SHADE = 0.45;              // 皺褶明暗的強度（0～1.5）
   const SHEEN = 0.09;              // 布面光澤的強度（0 就是沒有反光）
-  const DAY_SHADOW = 0.5;          // 白天模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小暗面越淡）
-  const NIGHT_LIGHT = 0.5;         // 夜間模式：皺褶亮面和光澤的亮度（1 = 跟 SHADE、SHEEN 一樣，越小越暗）
+  const DAY_SHADOW = 0.33;         // 白天模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小暗面越淡）
+  const NIGHT_LIGHT = 0.33;        // 夜間模式：皺褶亮面和光澤的亮度（1 = 跟 SHADE、SHEEN 一樣，越小越暗）
   const BAND = 0.36;               // 皺褶那一段有多寬（頁面寬度的幾倍）
   const FOLD = [190, 520];         // 皺褶的間距（像素），小 = 細碎的波紋，大 = 大片的起伏
   const SLANT = 0.12;              // 風的前緣斜多少（頁面寬度的幾倍），0 就是一條直的線
