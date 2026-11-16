@@ -18,8 +18,8 @@ if (!reducedMotion.matches) {
   const DURATION = 4.4;            // 一陣風從左吹到右要幾秒
   const DISPLACE = 36;             // 紙被推歪的程度（像素），越大起伏越明顯、字也越歪
   const RIPPLE = { len: 130, amp: 0.6 }; // 只推歪、不打光的細波紋：間距（像素）和強度，讓字和線條像布一樣彎來彎去
-  const SHADE = 0.06;              // 皺褶明暗的強度（0～1.5）
-  const SHEEN = 0.012;             // 布面光澤的強度（0 就是沒有反光）
+  const SHADE = 0;                 // 皺褶明暗的強度（0～1.5）
+  const SHEEN = 0;                 // 布面光澤的強度（0 就是沒有反光）
   const DAY_SHADOW = 0.33;         // 白天模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小暗面越淡）
   const NIGHT_LIGHT = 0.12;        // 夜間模式：皺褶亮面和光澤的亮度（1 = 跟 SHADE、SHEEN 一樣，越小越暗）
   const NIGHT_SHADOW = 0.65;       // 夜間模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小越淡）
