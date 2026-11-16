@@ -1,9 +1,12 @@
-// 紙角捲起：每張紙（.pane）的右下角都微微翹起一點，像一張放了一陣子的紙；
-// 滑鼠靠近右下角時，紙角會跟著捲得更高，滑鼠離開後又慢慢放回去。新打開的一頁會先翹一下再落定。
+// 紙角捲起：每張紙（.pane）的右下角都微微翻起一點，像一張放了一陣子的紙；
+// 滑鼠靠近右下角時，紙角會往左上翻捲得更大，滑鼠離開後又慢慢放回去。新打開的一頁會先翻一下再落定。
 //
-// 做法：頁面還是真的 HTML。紙角「被捲起來」的那一塊用 clip-path 切掉（後面露出背景），
-// 切口是一條平滑的曲線；再沿著曲線疊一層 SVG 的陰影和高光，看起來就像紙的邊緣捲起來、接住光。
-// 只在有滑鼠的寬螢幕疊紙版面啟用；系統開了「減少動態效果」就不做。
+// 做法（經典的「捲頁角」）：
+//   1. 沿著一條斜斜的摺線，用 clip-path 把右下角那一塊三角形切掉（後面露出背景）
+//   2. 把切掉的那一塊對摺線「翻」過來，畫在紙面上當作翻起來的紙背；
+//      紙背因為是捲起來的圓筒，所以畫得比真正對摺短一點、邊緣是彎的，再用漸層畫出圓筒的明暗
+//   3. 翻起來的紙背底下，畫一層模糊的影子投在紙面上
+// 頁面還是真的 HTML。只在有滑鼠的寬螢幕疊紙版面啟用；系統開了「減少動態效果」就不做。
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -11,7 +14,8 @@ const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 if (!reducedMotion.matches && finePointer.matches && document.body.classList.contains('has-stack')) {
   // ── 可以調整的數值 ─────────────────────────────
   const REST = 0.16;               // 平常紙角翹起的程度（0 = 完全平，1 = 捲到最高）
-  const CURL = { x: 150, y: 210 }; // 捲到最高時，切口沿著底邊、右邊各吃進去多少像素
+  const CURL = { x: 230, y: 96 };  // 翻到最大時，摺線在底邊、右邊各離角落多少像素（底邊長、右邊短，紙角往左上翻）
+  const ROLL = 0.78;               // 紙背翻過來的長度（1 = 像摺紙一樣整塊攤平，越小越像捲成圓筒）
   const REACH = 260;               // 滑鼠離右下角多近開始讓紙角捲起來（像素）
   const INTRO = 0.62;              // 新打開的一頁，先翹到多高再落定
   const STIFF = 90, DAMP = 13;     // 彈簧：越硬越快到位、阻尼越大越不會晃
@@ -19,50 +23,69 @@ if (!reducedMotion.matches && finePointer.matches && document.body.classList.con
   const NS = 'http://www.w3.org/2000/svg';
   const OUT = 80; // clip-path 往外多留的空間，讓紙原本的陰影不會被切掉
 
-  type Curl = { pane: HTMLElement; c: number; v: number; born: number; svg: SVGSVGElement; shade: SVGPathElement; light: SVGPathElement; shown: boolean };
+  type Curl = { pane: HTMLElement; c: number; v: number; born: number; svg: SVGSVGElement; shadow: SVGPathElement; flap: SVGPathElement; grad: SVGLinearGradientElement; shown: boolean };
   const curls = new Map<HTMLElement, Curl>();
   let mx = -1e5, my = -1e5;
   let seq = 0;
 
   const attach = (pane: HTMLElement) => {
     if (curls.has(pane)) return;
-    const id = `curl-blur-${seq++}`;
+    const id = `curl-${seq++}`;
     const svg = document.createElementNS(NS, 'svg');
     svg.classList.add('pane-curl');
     svg.setAttribute('aria-hidden', 'true');
+    // 紙背的明暗：摺線處（圓筒背光的那一側）略暗 → 圓筒頂端最亮 → 往紙角漸漸轉暗
     svg.innerHTML = `
-      <defs><filter id="${id}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9" /></filter></defs>
-      <path class="pane-curl-shade" filter="url(#${id})" fill="none" stroke-linecap="round" />
-      <path class="pane-curl-light" fill="none" stroke-linecap="round" />`;
+      <defs>
+        <filter id="${id}-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" /></filter>
+        <linearGradient id="${id}-grad" gradientUnits="userSpaceOnUse">
+          <stop offset="0" class="pane-curl-stop-fold" />
+          <stop offset="0.38" class="pane-curl-stop-top" />
+          <stop offset="1" class="pane-curl-stop-tip" />
+        </linearGradient>
+      </defs>
+      <path class="pane-curl-shadow" filter="url(#${id}-blur)" />
+      <path class="pane-curl-flap" fill="url(#${id}-grad)" />`;
     pane.append(svg);
     curls.set(pane, {
       pane, c: 0, v: 0, born: performance.now() + curls.size * 120, svg,
-      shade: svg.querySelector('.pane-curl-shade')!, light: svg.querySelector('.pane-curl-light')!, shown: false,
+      shadow: svg.querySelector('.pane-curl-shadow')!, flap: svg.querySelector('.pane-curl-flap')!,
+      grad: svg.querySelector('linearGradient')!, shown: false,
     });
     start();
   };
 
-  // 紙角的切口：從右邊往下，平滑地彎到底邊（往右下角鼓起來，像紙角捲起時看到的輪廓）
-  const curve = (W: number, H: number, a: number, b: number) =>
-    `M ${W} ${H - a} C ${W - b * 0.06} ${H - a * 0.42}, ${W - b * 0.48} ${H - a * 0.04}, ${W - b} ${H}`;
-
   const draw = (k: Curl) => {
     const W = k.pane.offsetWidth, H = k.pane.offsetHeight;
-    const a = CURL.y * k.c, b = CURL.x * k.c;
+    const b = CURL.x * k.c, a = CURL.y * k.c;
     if (a < 0.5) {
       if (k.shown) { k.pane.style.clipPath = ''; k.svg.style.display = 'none'; k.shown = false; }
       return;
     }
-    const edge = curve(W, H, a, b);
-    k.pane.style.clipPath = `path('M ${-OUT} ${-OUT} H ${W + OUT} V ${H - a} H ${W} ${edge.slice(edge.indexOf('C'))} V ${H + OUT} H ${-OUT} Z')`;
+    // 摺線兩端：P 在底邊、Q 在右邊；C 是紙角
+    const P = [W - b, H], Q = [W, H - a], C = [W, H];
+    const len = Math.hypot(Q[0] - P[0], Q[1] - P[1]);
+    const d = [(Q[0] - P[0]) / len, (Q[1] - P[1]) / len];
+    const t = (C[0] - P[0]) * d[0] + (C[1] - P[1]) * d[1];
+    const F = [P[0] + d[0] * t, P[1] + d[1] * t];          // 紙角到摺線的垂足
+    const T = [F[0] + (F[0] - C[0]) * ROLL, F[1] + (F[1] - C[1]) * ROLL]; // 翻過來的紙角（捲起來所以短一點）
+    // 紙背的兩條邊從摺線兩端彎向翻過來的紙角，往外鼓一點，像紙捲起來的弧度
+    const bulge = (A: number[], B: number[], amt: number) => {
+      const mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2;
+      const nx = mx - F[0], ny = my - F[1], nl = Math.hypot(nx, ny) || 1;
+      return `${mx + (nx / nl) * amt} ${my + (ny / nl) * amt}`;
+    };
+    const flap = `M ${P[0]} ${P[1]} L ${Q[0]} ${Q[1]} Q ${bulge(Q, T, a * 0.12)} ${T[0]} ${T[1]} Q ${bulge(T, P, b * 0.05)} ${P[0]} ${P[1]} Z`;
+    k.pane.style.clipPath = `path('M ${-OUT} ${-OUT} H ${W + OUT} V ${Q[1]} H ${Q[0]} L ${P[0]} ${P[1]} V ${H + OUT} H ${-OUT} Z')`;
     k.svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     k.svg.style.display = '';
-    // 陰影：沿著切口一道模糊的暗帶，切口外那一半會被切掉，只留下紙面上「快要捲起來」的那一圈暗
-    k.shade.setAttribute('d', edge);
-    k.shade.setAttribute('stroke-width', String(10 + 22 * k.c));
-    // 高光：切口邊緣一條細細的亮線，像捲起來的紙緣接住了光
-    k.light.setAttribute('d', edge);
-    k.light.setAttribute('stroke-width', String(1 + 1.2 * k.c));
+    k.flap.setAttribute('d', flap);
+    // 影子：同樣的形狀往紙角那一側推一點、放大一點，模糊後投在紙面上
+    const sx = (T[0] - F[0]) * 0.12, sy = (T[1] - F[1]) * 0.12;
+    k.shadow.setAttribute('d', flap);
+    k.shadow.setAttribute('transform', `translate(${sx} ${sy})`);
+    k.grad.setAttribute('x1', String(F[0])); k.grad.setAttribute('y1', String(F[1]));
+    k.grad.setAttribute('x2', String(T[0])); k.grad.setAttribute('y2', String(T[1]));
     k.shown = true;
   };
 
