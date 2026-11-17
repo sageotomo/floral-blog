@@ -16,6 +16,15 @@ if (stack && track) {
   const panes = () => [...track.querySelectorAll<HTMLElement>('[data-pane]')];
   const cssPx = (name: string) => parseFloat(getComputedStyle(stack).getPropertyValue(name)) || 0;
 
+  // 橫向捲軸會吃掉堆疊底部的高度；量出它的高度交給 CSS（--stack-sb），讓左邊導覽列和右邊每一頁的底邊對齊
+  const syncScrollbar = () => {
+    const sb = stack.offsetHeight - stack.clientHeight;
+    document.documentElement.style.setProperty('--stack-sb', `${sb}px`);
+  };
+  new ResizeObserver(syncScrollbar).observe(stack);
+  new ResizeObserver(syncScrollbar).observe(track);
+  syncScrollbar();
+
   /** 連結網址 → 頁面識別（about、colophon、blog、notes、blog/檔名、notes/檔名）；其他連結回傳 null。 */
   const slugOf = (href: string) => {
     const url = new URL(href, location.href);

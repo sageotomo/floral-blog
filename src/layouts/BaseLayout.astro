@@ -1,5 +1,5 @@
 ---
-// 全站使用 Noto Serif TC，由 Google Fonts 依頁面字元分片載入。
+// 全站使用獅尾四季春繁中字型，由 jsDelivr 提供網頁字型。
 import '../styles/global.css';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 const { title = SITE_TITLE, description = SITE_DESCRIPTION, stack = false } = Astro.props;
@@ -11,9 +11,7 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, stack = false } = As
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#fff" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <title>{title}</title>
     <script is:inline>
       try {
@@ -28,7 +26,7 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, stack = false } = As
   <body class={stack ? 'has-stack' : undefined}>
     <div class="site-frame">
     <header class="site-header">
-      <nav aria-label="主要導覽"><a href="/">關於</a><a href="/blog/">日記</a><a href="/notes/">筆記</a></nav>
+      <nav aria-label="主要導覽"><a href="/">About</a><a href="/blog/">日記</a><a href="/notes/">筆記</a></nav>
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="切換至夜間模式" aria-pressed="false" title="切換至夜間模式"><span data-theme-icon aria-hidden="true">☾</span></button>
       <button class="theme-toggle seed-toggle" type="button" data-seed-toggle aria-label="開啟蒲公英游標特效" aria-pressed="false" title="開啟蒲公英游標特效"><svg class="seed-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 9.5c-.3 4 .3 8.5 1.2 12.5"/><path d="M12 9.5V2.6M12 9.5 8.6 3.4M12 9.5l3.4-6.1M12 9.5 5.6 5.2M12 9.5l6.4-4.3M12 9.5 3.6 8.4M12 9.5l8.4-1.1M12 9.5 4.4 12M12 9.5l7.6 2.5"/><circle cx="12" cy="9.5" r="1" fill="currentColor" stroke="none"/><path d="M13.2 22v0" stroke-width="2"/></svg></button>
       <button class="theme-toggle wind-toggle" type="button" data-wind-button aria-label="吹一陣風" title="吹一陣風"><svg class="seed-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5h10.2a2.6 2.6 0 1 0-2.6-2.6"/><path d="M3 12.5h15.2a3 3 0 1 1-3 3"/><path d="M3 16.5h6.5"/></svg></button>
