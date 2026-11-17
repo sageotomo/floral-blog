@@ -2,6 +2,7 @@
 // 伺服器輸出的每個文章頁本身就是「第一欄」；這支腳本只負責：
 //   點站內文章連結 → fetch 那一頁 → 取出它的欄位 → 接在右邊。
 // 沒有 JS 或螢幕太窄時，連結照常跳頁。
+import { SITE_TITLE } from '../consts';
 
 const DESKTOP = window.matchMedia('(min-width: 900px)');
 
@@ -57,7 +58,7 @@ if (stack && track) {
     url.searchParams.delete('stack');
     rest.forEach((pane) => url.searchParams.append('stack', pane.dataset.slug!));
     history.pushState(null, '', url);
-    document.title = first?.dataset.title ? `${first.dataset.title}｜blog` : 'blog';
+    document.title = first?.dataset.title ? `${first.dataset.title}｜${SITE_TITLE}` : SITE_TITLE;
   };
 
   /** 依捲動位置決定每一頁的狀態（重疊／收成書脊），並標出已經開啟的連結。 */

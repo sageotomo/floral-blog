@@ -15,9 +15,9 @@ if (reducedMotion.matches) windButtons.forEach((button) => { button.hidden = tru
 
 if (!reducedMotion.matches) {
   // ── 可以調整的數值 ─────────────────────────────
-  const DURATION = 4.4;            // 一陣風從左吹到右要幾秒
+  const DURATION = 8.8;            // 一陣風從左吹到右要幾秒
   const DISPLACE = 36;             // 紙被推歪的程度（像素），越大起伏越明顯、字也越歪
-  const RIPPLE = { len: 130, amp: 0.6 }; // 只推歪、不打光的細波紋：間距（像素）和強度，讓字和線條像布一樣彎來彎去
+  const RIPPLE = { len: 260, amp: 0.6 }; // 只推歪、不打光的細波紋：間距（像素）和強度，讓字和線條像布一樣彎來彎去
   const SHADE = 0;                 // 皺褶明暗的強度（0～1.5）
   const SHEEN = 0;                 // 布面光澤的強度（0 就是沒有反光）
   const DAY_SHADOW = 0.33;         // 白天模式：皺褶暗面的深淺（1 = 跟 SHADE 一樣，越小暗面越淡）
@@ -26,7 +26,7 @@ if (!reducedMotion.matches) {
   const NIGHT_BAND = 1.5;          // 夜間模式：一陣風掃過的範圍（皺褶那一段的寬度）是白天的幾倍
   const NIGHT_FOLD = 1.56;         // 夜間模式：皺褶的間距是白天的幾倍（越大波紋越寬、越疏）
   const BAND = 0.36;               // 皺褶那一段有多寬（頁面寬度的幾倍）
-  const FOLD = [190, 520];         // 皺褶的間距（像素），小 = 細碎的波紋，大 = 大片的起伏
+  const FOLD = [380, 1040];         // 皺褶的間距（像素），小 = 細碎的波紋，大 = 大片的起伏
   const SLANT = 0.12;              // 風的前緣斜多少（頁面寬度的幾倍），0 就是一條直的線
 
   const RES = 1 / 3;               // 地形圖的解析度（越小越省，皺褶本來就很平滑，不需要高解析）
@@ -146,6 +146,15 @@ if (!reducedMotion.matches) {
       el.setAttribute('y', String(-H * 0.05));
     });
   };
+
+  // 先備好第一次點擊會用到的地形圖，避免按下按鈕後才同步計算造成停頓。
+  const initialFrame = document.querySelector<HTMLElement>('.site-frame');
+  if (initialFrame) {
+    const initialRect = initialFrame.getBoundingClientRect();
+    if (initialRect.width >= 10 && initialRect.height >= 10) {
+      buildMaps(initialRect.width, initialRect.height, document.documentElement.dataset.theme === 'dark');
+    }
+  }
 
   // ── 一陣風 ───────────────────────────────────
   let blowing = false;

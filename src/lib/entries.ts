@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import { extractTargets, loadIndex, resolveTarget } from './wikilinks.mjs';
 
 export const KINDS = {
-  blog: { label: '日記', back: '← 所有日記' },
+  blog: { label: '日誌', back: '← 所有日誌' },
   notes: { label: '筆記', back: '← 所有筆記' },
 } as const;
 export type Kind = keyof typeof KINDS;

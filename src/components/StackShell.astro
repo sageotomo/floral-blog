@@ -2,12 +2,13 @@
 // 堆疊版面的外殼：左側導覽 + 橫向堆疊 + 第一頁。內容由 slot 放進第一頁。
 // paneKey 是這一頁在堆疊裡的識別，也等於它的網址路徑（例：notes、notes/evergreen-notes）。
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE } from '../consts';
 
 // narrow：目錄這類內容很短的頁面用窄欄，不要跟文章一樣寬
 interface Props { paneKey: string; title: string; description?: string; back?: { href: string; label: string }; narrow?: boolean }
 const { paneKey, title, description, back, narrow = false } = Astro.props;
 ---
-<BaseLayout title={`${title}｜blog`} description={description} stack>
+<BaseLayout title={`${title}｜${SITE_TITLE}`} description={description} stack>
   <main class="article-shell">
     {back && <a class="back-link" href={back.href}>{back.label}</a>}
     <div class="stack" data-stack>
