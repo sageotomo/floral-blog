@@ -3,7 +3,7 @@ import { satteri } from '@astrojs/markdown-satteri';
 import { wikilinkPlugin } from './src/lib/wikilinks.mjs';
 import { externalLinksPlugin } from './src/lib/external-links.mjs';
 
-const site = 'https://example.com';
+const site = 'https://ayhuang.com';
 
 export default defineConfig({
   site,
