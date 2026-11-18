@@ -1,3 +1,14 @@
+/* ── 等比例縮放 ─────────────────────────────
+   桌面版所有尺寸都用 var(--u)（設計稿上的 1px）來寫，整個版面會跟著視窗等比例放大縮小，
+   小筆電和大螢幕看到的字、卡片和排版比例都一樣。
+   --ref-w / --ref-h 是設計時的視窗大小：在這個大小下 --u 剛好等於 1px。
+   --u-min / --u-max 是縮放的下限和上限，避免字在很小的螢幕上小到看不清楚。 */
+@property --spine { syntax:"<length>"; inherits:true; initial-value:0px; } /* 登記成長度，stack.ts 讀到的才是換算好的 px */
+:root { --u: 1px; } /* 手機與窄螢幕：不縮放 */
+@media (min-width:900px) {
+  :root { --ref-w: 1147; --ref-h: 841; --u-min: .8px; --u-max: 1.3px;
+          --u: clamp(var(--u-min), min(calc(100vw / var(--ref-w)), calc(100vh / var(--ref-h))), var(--u-max)); }
+}
 @font-face {
   font-family: "Swei Spring";
   src: url("https://cdn.jsdelivr.net/gh/max32002/swei-spring@1.068/WebFont/CJK%20TC/SweiSpringCJKtc-Regular.woff2") format("woff2");
@@ -25,7 +36,7 @@
   --quote-bg: rgba(0,0,0,.02);
   --stripe-bg: rgba(0,0,0,.03);
   --hover-bg: rgba(0,0,0,.05);
-  --frame-shadow: 0 12px 42px rgba(36,54,74,.10);
+  --frame-shadow: 0 calc(12 * var(--u)) calc(42 * var(--u)) rgba(36,54,74,.10);
   --line: #ccc0b2;
   --link: #2b2118;      /* 連結：咖啡色粗體 */
   --link-soft: #ececec; /* 已經在右邊開啟的連結底色 */
@@ -42,7 +53,7 @@
   --quote-bg: rgba(255,255,255,.05);
   --stripe-bg: rgba(255,255,255,.035);
   --hover-bg: rgba(255,255,255,.07);
-  --frame-shadow: 0 12px 42px rgba(0,0,0,.4);
+  --frame-shadow: 0 calc(12 * var(--u)) calc(42 * var(--u)) rgba(0,0,0,.4);
   --line: #4a484b;
   --link: #dedbd8;
   --link-soft: #3a393c;
@@ -52,14 +63,14 @@
  :root { --seed-tone:#c2b192; --seed-core:#a07a4c; }
 * { box-sizing: border-box; }
 html { min-height: 100%; background: var(--page-bg); scroll-behavior: smooth; }
-body { min-height: 100vh; margin: 0; padding: 56px 0; color: var(--ink); background-color: var(--paper); font-family: "Swei Spring", serif; font-size: calc(18.72px * var(--type-scale)); line-height: 1.75; letter-spacing: .04em; }
+body { min-height: 100vh; margin: 0; padding: calc(56 * var(--u)) 0; color: var(--ink); background-color: var(--paper); font-family: "Swei Spring", serif; font-size: calc(calc(18.72 * var(--u)) * var(--type-scale)); line-height: 1.75; letter-spacing: .04em; }
 a { color: inherit; text-decoration: none; }
-a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-underline-offset:3px; }
-.site-frame { display: flex; flex-direction: column; width: min(76%, 1920px); min-height: calc(100vh - 112px); margin: 0 auto; background: var(--paper); border: 1.3px solid var(--line); box-shadow: var(--frame-shadow); }
-.site-header { width: 100%; min-height: 84px; padding: 16px 26px; position: relative; display: flex; align-items: center; justify-content: flex-start; gap: 44px; background: transparent; border: 0; border-bottom: 1.3px solid var(--line); box-shadow: none; }
+a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-underline-offset:calc(3 * var(--u)); }
+.site-frame { display: flex; flex-direction: column; width: min(76%, calc(1920 * var(--u))); min-height: calc(100vh - calc(112 * var(--u))); margin: 0 auto; background: var(--paper); border: calc(1.3 * var(--u)) solid var(--line); box-shadow: var(--frame-shadow); }
+.site-header { width: 100%; min-height: calc(84 * var(--u)); padding: calc(16 * var(--u)) calc(26 * var(--u)); position: relative; display: flex; align-items: center; justify-content: flex-start; gap: calc(44 * var(--u)); background: transparent; border: 0; border-bottom: calc(1.3 * var(--u)) solid var(--line); box-shadow: none; }
 .wordmark,.site-header nav { color:var(--ink); }
 .article-header h1 { color:var(--ink); }
-.theme-toggle { display:inline-grid; place-items:center; flex:none; width:40px; height:40px; margin-left:auto; padding:0; border:0; border-radius:0; background:transparent; color:var(--ink); font:inherit; font-size:calc(22.88px * var(--type-scale)); line-height:1; cursor:pointer; }
+.theme-toggle { display:inline-grid; place-items:center; flex:none; width:calc(40 * var(--u)); height:calc(40 * var(--u)); margin-left:auto; padding:0; border:0; border-radius:0; background:transparent; color:var(--ink); font:inherit; font-size:calc(calc(22.88 * var(--u)) * var(--type-scale)); line-height:1; cursor:pointer; }
 .theme-toggle:hover { background:var(--hover-bg); }
 /* 蒲公英特效的開關：預設關閉（淡淡的），按下去打開後變成實色 */
 .seed-toggle { margin-left:0; opacity:.45; transition:opacity .2s; }
@@ -71,72 +82,72 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
 .wind-toggle { margin-left:0; }
 .wind-toggle[hidden] { display:none; }
 .seed-icon { display:block; width:1em; height:1em; }
-.wordmark { display:flex; align-items:center; gap:10px; font-size:calc(26px * var(--type-scale)); font-weight:700; letter-spacing:.04em; line-height:1.1; }
-.wordmark small { display:block; margin-top:5px; font-weight:400; color:var(--muted); font-size:calc(12.48px * var(--type-scale)); line-height:1.2; letter-spacing:.22em; }
-.site-header nav { display:flex; gap:30px; font-size:calc(20.8px * var(--type-scale)); letter-spacing:.04em; }
-.home,.archive,.article-shell { width:min(100% - 48px, 760px); margin:0 auto; }
-.home { padding:78px 0 110px; }
-.welcome { position:relative; padding:16px 0 70px; border-bottom:1.3px solid var(--line); }
-.eyebrow { color:var(--ink); font-size:calc(13.52px * var(--type-scale)); line-height:1.6; letter-spacing:.22em; }
-.welcome h1 { margin:22px 0 20px; font-size:clamp(calc(35.36px * var(--type-scale)),calc(5.2vw * var(--type-scale)),calc(52px * var(--type-scale))); font-weight:400; line-height:1.55; letter-spacing:.05em; }
+.wordmark { display:flex; align-items:center; gap:calc(10 * var(--u)); font-size:calc(calc(26 * var(--u)) * var(--type-scale)); font-weight:700; letter-spacing:.04em; line-height:1.1; }
+.wordmark small { display:block; margin-top:calc(5 * var(--u)); font-weight:400; color:var(--muted); font-size:calc(calc(12.48 * var(--u)) * var(--type-scale)); line-height:1.2; letter-spacing:.22em; }
+.site-header nav { display:flex; gap:calc(30 * var(--u)); font-size:calc(calc(20.8 * var(--u)) * var(--type-scale)); letter-spacing:.04em; }
+.home,.archive,.article-shell { width:min(100% - calc(48 * var(--u)), calc(760 * var(--u))); margin:0 auto; }
+.home { padding:calc(78 * var(--u)) 0 calc(110 * var(--u)); }
+.welcome { position:relative; padding:calc(16 * var(--u)) 0 calc(70 * var(--u)); border-bottom:calc(1.3 * var(--u)) solid var(--line); }
+.eyebrow { color:var(--ink); font-size:calc(calc(13.52 * var(--u)) * var(--type-scale)); line-height:1.6; letter-spacing:.22em; }
+.welcome h1 { margin:calc(22 * var(--u)) 0 calc(20 * var(--u)); font-size:clamp(calc(calc(35.36 * var(--u)) * var(--type-scale)),calc(5.2vw * var(--type-scale)),calc(calc(52 * var(--u)) * var(--type-scale))); font-weight:400; line-height:1.55; letter-spacing:.05em; }
 .welcome h1 em { color:var(--ink); font-style:normal; }
-.welcome-copy { color:var(--ink); font-size:calc(18.72px * var(--type-scale)); }
-.text-link,.all-posts { display:inline-block; margin-top:20px; padding-bottom:4px; border-bottom:1.3px solid var(--line); color:var(--ink); font-size:calc(16.64px * var(--type-scale)); letter-spacing:.08em; }
-.welcome-sprig { position:absolute; right:5%; top:34px; color:rgba(43,33,24,.14); font-size:calc(121.68px * var(--type-scale)); line-height:1; }
-.latest { padding-top:58px; }
-.section-heading { margin-bottom:24px; }
-.section-heading .eyebrow { margin:0 0 8px; }
-.section-heading h2,.page-intro h1 { margin:0; font-size:calc(30.16px * var(--type-scale)); font-weight:400; letter-spacing:.1em; }
-.post-list { border-top:1.3px solid var(--line); }
-.post-row { display:grid; grid-template-columns:130px 1fr 24px; gap:18px; align-items:start; padding:22px 4px; border-bottom:1.3px solid var(--line); }
-.post-row.no-date { grid-template-columns:1fr 24px; }
-.post-row time { padding-top:5px; color:var(--muted); font-size:calc(14.56px * var(--type-scale)); line-height:1.7; letter-spacing:.04em; }
-.post-row h2,.post-row h3 { margin:0 0 4px; font-size:calc(21.84px * var(--type-scale)); font-weight:400; letter-spacing:.04em; }
-.post-row p { margin:0; color:var(--ink); font-size:calc(16.64px * var(--type-scale)); }
-.row-arrow { padding-top:4px; color:var(--ink); }
+.welcome-copy { color:var(--ink); font-size:calc(calc(18.72 * var(--u)) * var(--type-scale)); }
+.text-link,.all-posts { display:inline-block; margin-top:calc(20 * var(--u)); padding-bottom:calc(4 * var(--u)); border-bottom:calc(1.3 * var(--u)) solid var(--line); color:var(--ink); font-size:calc(calc(16.64 * var(--u)) * var(--type-scale)); letter-spacing:.08em; }
+.welcome-sprig { position:absolute; right:5%; top:calc(34 * var(--u)); color:rgba(43,33,24,.14); font-size:calc(calc(121.68 * var(--u)) * var(--type-scale)); line-height:1; }
+.latest { padding-top:calc(58 * var(--u)); }
+.section-heading { margin-bottom:calc(24 * var(--u)); }
+.section-heading .eyebrow { margin:0 0 calc(8 * var(--u)); }
+.section-heading h2,.page-intro h1 { margin:0; font-size:calc(calc(30.16 * var(--u)) * var(--type-scale)); font-weight:400; letter-spacing:.1em; }
+.post-list { border-top:calc(1.3 * var(--u)) solid var(--line); }
+.post-row { display:grid; grid-template-columns:calc(130 * var(--u)) 1fr calc(24 * var(--u)); gap:calc(18 * var(--u)); align-items:start; padding:calc(22 * var(--u)) calc(4 * var(--u)); border-bottom:calc(1.3 * var(--u)) solid var(--line); }
+.post-row.no-date { grid-template-columns:1fr calc(24 * var(--u)); }
+.post-row time { padding-top:calc(5 * var(--u)); color:var(--muted); font-size:calc(calc(14.56 * var(--u)) * var(--type-scale)); line-height:1.7; letter-spacing:.04em; }
+.post-row h2,.post-row h3 { margin:0 0 calc(4 * var(--u)); font-size:calc(calc(21.84 * var(--u)) * var(--type-scale)); font-weight:400; letter-spacing:.04em; }
+.post-row p { margin:0; color:var(--ink); font-size:calc(calc(16.64 * var(--u)) * var(--type-scale)); }
+.row-arrow { padding-top:calc(4 * var(--u)); color:var(--ink); }
 .empty-note { color:var(--muted); }
-.archive { min-height:65vh; padding:66px 0 110px; }
-.page-intro { padding:0 0 34px; }
-.page-intro .eyebrow { margin:0 0 8px; }
-.page-intro > p:last-child { color:var(--muted); font-size:calc(16.64px * var(--type-scale)); }
-.category { display:inline-block; margin-top:8px; padding:1px 9px; border:1.3px solid var(--line); border-radius:99px; color:var(--ink); font-size:calc(13.52px * var(--type-scale)); }
-.article-shell { padding:44px 0 100px; }
-.back-link { color:var(--ink); font-size:calc(15.6px * var(--type-scale)); }
-.article { width:min(100%, 680px); margin:44px auto 0; }
-.about-icons { display:flex; flex-wrap:wrap; gap:16px 24px; margin:16px 0; }
-.about-icons > div { display:flex; align-items:center; gap:8px; }
+.archive { min-height:65vh; padding:calc(66 * var(--u)) 0 calc(110 * var(--u)); }
+.page-intro { padding:0 0 calc(34 * var(--u)); }
+.page-intro .eyebrow { margin:0 0 calc(8 * var(--u)); }
+.page-intro > p:last-child { color:var(--muted); font-size:calc(calc(16.64 * var(--u)) * var(--type-scale)); }
+.category { display:inline-block; margin-top:calc(8 * var(--u)); padding:calc(1 * var(--u)) calc(9 * var(--u)); border:calc(1.3 * var(--u)) solid var(--line); border-radius:calc(99 * var(--u)); color:var(--ink); font-size:calc(calc(13.52 * var(--u)) * var(--type-scale)); }
+.article-shell { padding:calc(44 * var(--u)) 0 calc(100 * var(--u)); }
+.back-link { color:var(--ink); font-size:calc(calc(15.6 * var(--u)) * var(--type-scale)); }
+.article { width:min(100%, calc(680 * var(--u))); margin:calc(44 * var(--u)) auto 0; }
+.about-icons { display:flex; flex-wrap:wrap; gap:calc(16 * var(--u)) calc(24 * var(--u)); margin:calc(16 * var(--u)) 0; }
+.about-icons > div { display:flex; align-items:center; gap:calc(8 * var(--u)); }
 .about-icons svg,.about-icons__theme { display:block; flex:none; width:1.35em; height:1.35em; }
 .about-icons__theme { width:2.5em; font-size:1.35em; line-height:1; text-align:center; }
-.article-header { padding-bottom:6px; text-align:left; }
-.pane .article-header { min-height:75px; box-sizing:border-box; }
-.article-header h1 { margin:0; font-size:calc(34.84px * var(--type-scale)); font-weight:700; line-height:1.25; letter-spacing:.04em; }
-.article-meta { display:flex; gap:14px; margin:23px 0 0; font-size:calc(20.72px * var(--type-scale)); line-height:1.4; opacity:.6; }
+.article-header { padding-bottom:calc(6 * var(--u)); text-align:left; }
+.pane .article-header { min-height:calc(75 * var(--u)); box-sizing:border-box; }
+.article-header h1 { margin:0; font-size:calc(calc(34.84 * var(--u)) * var(--type-scale)); font-weight:700; line-height:1.25; letter-spacing:.04em; }
+.article-meta { display:flex; gap:calc(14 * var(--u)); margin:calc(23 * var(--u)) 0 0; font-size:calc(calc(20.72 * var(--u)) * var(--type-scale)); line-height:1.4; opacity:.6; }
 /* ── Markdown 內文的顯示方式 ─────────────────────── */
-.prose { padding:22px 0 30px; font-size:calc(20.28px * var(--type-scale)); line-height:1.75; }
-.pane .prose { padding-top:23px; font-size:calc(25.26px * var(--type-scale)); line-height:1.9; }
-.pane .prose h2 { font-size:calc(29.64px * var(--type-scale)); }
-.pane .prose h3 { font-size:calc(25.48px * var(--type-scale)); }
-.pane .prose h4 { font-size:calc(21.32px * var(--type-scale)); }
-.pane .prose pre { font-size:calc(19.24px * var(--type-scale)); }
-.pane .prose p { margin-bottom:17px; }
+.prose { padding:calc(22 * var(--u)) 0 calc(30 * var(--u)); font-size:calc(calc(20.28 * var(--u)) * var(--type-scale)); line-height:1.75; }
+.pane .prose { padding-top:calc(23 * var(--u)); font-size:calc(calc(25.26 * var(--u)) * var(--type-scale)); line-height:1.9; }
+.pane .prose h2 { font-size:calc(calc(29.64 * var(--u)) * var(--type-scale)); }
+.pane .prose h3 { font-size:calc(calc(25.48 * var(--u)) * var(--type-scale)); }
+.pane .prose h4 { font-size:calc(calc(21.32 * var(--u)) * var(--type-scale)); }
+.pane .prose pre { font-size:calc(calc(19.24 * var(--u)) * var(--type-scale)); }
+.pane .prose p { margin-bottom:calc(17 * var(--u)); }
 .prose > :first-child { margin-top:0; }
-.prose p { margin:0 0 20px; }
-.prose h2,.prose h3,.prose h4 { margin:40px 0 20px; font-weight:700; line-height:1.25; }
-.prose h2 { font-size:calc(27.04px * var(--type-scale)); }
-.prose h3 { font-size:calc(22.88px * var(--type-scale)); }
-.prose h4 { font-size:calc(18.72px * var(--type-scale)); }
+.prose p { margin:0 0 calc(20 * var(--u)); }
+.prose h2,.prose h3,.prose h4 { margin:calc(40 * var(--u)) 0 calc(20 * var(--u)); font-weight:700; line-height:1.25; }
+.prose h2 { font-size:calc(calc(27.04 * var(--u)) * var(--type-scale)); }
+.prose h3 { font-size:calc(calc(22.88 * var(--u)) * var(--type-scale)); }
+.prose h4 { font-size:calc(calc(18.72 * var(--u)) * var(--type-scale)); }
 .prose strong { font-weight:700; }
-.prose ul,.prose ol { margin:0 0 20px; padding-left:32px; }
-.prose li { margin-bottom:6px; }
-.prose li > ul,.prose li > ol { margin:6px 0 0; }
-.prose blockquote { margin:0 0 16px; padding:8px 16px; background:var(--quote-bg); border-left:2.3px solid var(--line); color:var(--ink); }
+.prose ul,.prose ol { margin:0 0 calc(20 * var(--u)); padding-left:calc(32 * var(--u)); }
+.prose li { margin-bottom:calc(6 * var(--u)); }
+.prose li > ul,.prose li > ol { margin:calc(6 * var(--u)) 0 0; }
+.prose blockquote { margin:0 0 calc(16 * var(--u)); padding:calc(8 * var(--u)) calc(16 * var(--u)); background:var(--quote-bg); border-left:calc(2.3 * var(--u)) solid var(--line); color:var(--ink); }
 .prose blockquote > :last-child { margin-bottom:0; }
-.prose hr { height:1.3px; margin:24px 0; background:var(--line); border:0; }
-.prose code { padding:.1em .35em; background:var(--code-bg); border:1.3px solid var(--line); border-radius:4px; font-family:inherit; font-size:.9em; letter-spacing:0; }
-.prose pre { margin:0 0 20px; padding:16px; overflow-x:auto; border-radius:6px; font-family:inherit; font-size:calc(16.64px * var(--type-scale)); line-height:1.6; letter-spacing:0; }
+.prose hr { height:calc(1.3 * var(--u)); margin:calc(24 * var(--u)) 0; background:var(--line); border:0; }
+.prose code { padding:.1em .35em; background:var(--code-bg); border:calc(1.3 * var(--u)) solid var(--line); border-radius:calc(4 * var(--u)); font-family:inherit; font-size:.9em; letter-spacing:0; }
+.prose pre { margin:0 0 calc(20 * var(--u)); padding:calc(16 * var(--u)); overflow-x:auto; border-radius:calc(6 * var(--u)); font-family:inherit; font-size:calc(calc(16.64 * var(--u)) * var(--type-scale)); line-height:1.6; letter-spacing:0; }
 .prose pre code { padding:0; background:none; border:0; font-size:inherit; }
-.prose table { display:block; width:max-content; max-width:100%; margin:0 0 20px; overflow-x:auto; border-collapse:collapse; }
-.prose th,.prose td { padding:10px 12px; border:1.3px solid var(--line); }
+.prose table { display:block; width:max-content; max-width:100%; margin:0 0 calc(20 * var(--u)); overflow-x:auto; border-collapse:collapse; }
+.prose th,.prose td { padding:calc(10 * var(--u)) calc(12 * var(--u)); border:calc(1.3 * var(--u)) solid var(--line); }
 .prose th { font-weight:700; }
 .prose tr:nth-child(2n) td { background:var(--stripe-bg); }
 .prose img { max-width:100%; height:auto; }
@@ -144,78 +155,78 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
 /* 內文連結：文字跟一般內文一樣，靠右上角的小問號表示「可以在右邊展開」 */
 .prose a { color:inherit; font-weight:inherit; text-decoration:none; }
 /* 還沒展開的站內連結：字底下一條細虛線；展開之後換成細框，虛線拿掉 */
-.prose a[href^="/"]:not(.is-open) { text-decoration:underline dashed #9aa1ab 1px; text-underline-offset:5px; }
-.prose a[href^="/"]::after { content:"?"; display:inline; position:relative; top:-.6em; margin:0 1px 0 2px; color:var(--muted); font-size:.66em; font-weight:700; line-height:1; letter-spacing:0; vertical-align:baseline; transition:color .15s ease; }
+.prose a[href^="/"]:not(.is-open) { text-decoration:underline dashed #9aa1ab calc(1 * var(--u)); text-underline-offset:calc(5 * var(--u)); }
+.prose a[href^="/"]::after { content:"?"; display:inline; position:relative; top:-.6em; margin:0 calc(1 * var(--u)) 0 calc(2 * var(--u)); color:var(--muted); font-size:.66em; font-weight:700; line-height:1; letter-spacing:0; vertical-align:baseline; transition:color .15s ease; }
 .prose a[href^="/"]:hover::after,.prose a[href^="/"].is-open::after { color:var(--ink); }
 /* 連到站外的連結沒有問號，用底線表示 */
-.prose a:not([href^="/"]) { text-decoration:underline; text-decoration-color:var(--ink); text-underline-offset:3px; }
-.backlinks a:hover { text-decoration:underline; text-underline-offset:3px; }
+.prose a:not([href^="/"]) { text-decoration:underline; text-decoration-color:var(--ink); text-underline-offset:calc(3 * var(--u)); }
+.backlinks a:hover { text-decoration:underline; text-underline-offset:calc(3 * var(--u)); }
 .prose a[href^="/"]:not(.is-open):hover { text-decoration-color:var(--ink); }
-.site-footer { display: flex; justify-content: space-between; gap: 18px; width: 100%; margin: auto 0 0; padding: 22px 32px 30px; border-top: 1.3px solid var(--line); color: var(--muted); font-size: calc(14.56px * var(--type-scale)); }
+.site-footer { display: flex; justify-content: space-between; gap: calc(18 * var(--u)); width: 100%; margin: auto 0 0; padding: calc(22 * var(--u)) calc(32 * var(--u)) calc(30 * var(--u)); border-top: calc(1.3 * var(--u)) solid var(--line); color: var(--muted); font-size: calc(calc(14.56 * var(--u)) * var(--type-scale)); }
 @media (max-width:620px) {
-  body { font-size:calc(18.72px * var(--type-scale)); padding:16px 0; }
-  .site-frame { width:calc(100% - 32px); min-height:calc(100vh - 32px); }
-  .site-header { min-height:74px; padding:12px 16px; }
-  .wordmark { font-size:calc(23.92px * var(--type-scale)); }
-  .site-header nav { gap:16px; font-size:calc(16.64px * var(--type-scale)); }
-  .home,.archive,.article-shell { width:calc(100% - 40px); }
-  .home { padding-top:54px; }
-  .welcome { padding-bottom:48px; }
-  .welcome-sprig { right:0; top:52px; font-size:calc(74.88px * var(--type-scale)); opacity:.55; }
+  body { font-size:calc(calc(18.72 * var(--u)) * var(--type-scale)); padding:calc(16 * var(--u)) 0; }
+  .site-frame { width:calc(100% - calc(32 * var(--u))); min-height:calc(100vh - calc(32 * var(--u))); }
+  .site-header { min-height:calc(74 * var(--u)); padding:calc(12 * var(--u)) calc(16 * var(--u)); }
+  .wordmark { font-size:calc(calc(23.92 * var(--u)) * var(--type-scale)); }
+  .site-header nav { gap:calc(16 * var(--u)); font-size:calc(calc(16.64 * var(--u)) * var(--type-scale)); }
+  .home,.archive,.article-shell { width:calc(100% - calc(40 * var(--u))); }
+  .home { padding-top:calc(54 * var(--u)); }
+  .welcome { padding-bottom:calc(48 * var(--u)); }
+  .welcome-sprig { right:0; top:calc(52 * var(--u)); font-size:calc(calc(74.88 * var(--u)) * var(--type-scale)); opacity:.55; }
   .welcome-copy { position:relative; }
-  .post-row { grid-template-columns:1fr 20px; gap:3px 10px; padding:18px 2px; }
-  .post-row.no-date { grid-template-columns:1fr 24px; }
+  .post-row { grid-template-columns:1fr calc(20 * var(--u)); gap:calc(3 * var(--u)) calc(10 * var(--u)); padding:calc(18 * var(--u)) calc(2 * var(--u)); }
+  .post-row.no-date { grid-template-columns:1fr calc(24 * var(--u)); }
 .post-row time { grid-column:1; grid-row:1; }
   .post-row > div { grid-column:1; grid-row:2; }
   .post-row .row-arrow { grid-column:2; grid-row:2; }
-  .post-row h2,.post-row h3 { font-size:calc(20.8px * var(--type-scale)); }
-  .archive { padding-top:48px; }
-  .article-shell { padding-top:32px; }
-  .article { margin-top:32px; }
-  .prose { font-size:calc(20.28px * var(--type-scale)); }
-  .site-footer { padding:20px; flex-direction:column; gap:4px; }
+  .post-row h2,.post-row h3 { font-size:calc(calc(20.8 * var(--u)) * var(--type-scale)); }
+  .archive { padding-top:calc(48 * var(--u)); }
+  .article-shell { padding-top:calc(32 * var(--u)); }
+  .article { margin-top:calc(32 * var(--u)); }
+  .prose { font-size:calc(calc(20.28 * var(--u)) * var(--type-scale)); }
+  .site-footer { padding:calc(20 * var(--u)); flex-direction:column; gap:calc(4 * var(--u)); }
 }
 
 /* ── 筆記目錄：類別可以展開成文章列表 ─────────────── */
-.note-tree { padding:14px 0 30px; }
-.note-group summary { display:flex; align-items:center; gap:12px; padding:9px 12px; border-radius:6px; color:var(--ink); font-size:calc(25.26px * var(--type-scale)); font-weight:700; cursor:pointer; list-style:none; user-select:none; }
+.note-tree { padding:calc(14 * var(--u)) 0 calc(30 * var(--u)); }
+.note-group summary { display:flex; align-items:center; gap:calc(12 * var(--u)); padding:calc(9 * var(--u)) calc(12 * var(--u)); border-radius:calc(6 * var(--u)); color:var(--ink); font-size:calc(calc(25.26 * var(--u)) * var(--type-scale)); font-weight:700; cursor:pointer; list-style:none; user-select:none; }
 .note-group summary::-webkit-details-marker { display:none; }
 .note-group summary:hover { background:var(--hover-bg); }
-.note-group summary::after { content:""; width:8px; height:8px; margin-left:auto; border:solid var(--line); border-width:2.8px 2.8px 0 0; transform:rotate(45deg); transition:transform .15s ease; }
+.note-group summary::after { content:""; width:calc(8 * var(--u)); height:calc(8 * var(--u)); margin-left:auto; border:solid var(--line); border-width:calc(2.8 * var(--u)) calc(2.8 * var(--u)) 0 0; transform:rotate(45deg); transition:transform .15s ease; }
 .note-group[open] summary::after { transform:rotate(135deg); }
-.note-group-count { color:var(--muted); font-size:calc(18.2px * var(--type-scale)); font-weight:400; }
-.note-group ul { margin:2px 0 10px; padding:0 0 0 36px; list-style:none; }
-.note-group li a { display:block; padding:7px 12px; border-radius:6px; color:var(--ink); font-size:calc(25.26px * var(--type-scale)); }
+.note-group-count { color:var(--muted); font-size:calc(calc(18.2 * var(--u)) * var(--type-scale)); font-weight:400; }
+.note-group ul { margin:calc(2 * var(--u)) 0 calc(10 * var(--u)); padding:0 0 0 calc(36 * var(--u)); list-style:none; }
+.note-group li a { display:block; padding:calc(7 * var(--u)) calc(12 * var(--u)); border-radius:calc(6 * var(--u)); color:var(--ink); font-size:calc(calc(25.26 * var(--u)) * var(--type-scale)); }
 .pane--narrow .note-group li a { white-space:nowrap; }
 .note-group li a:hover { background:var(--hover-bg); text-decoration:none; }
 .note-group li a.is-open { background:var(--link-soft); color:var(--link); font-weight:700; }
 
 /* ── 日記列表 ─────────────────────────────────── */
-.entry-list { padding:14px 0 30px; }
+.entry-list { padding:calc(14 * var(--u)) 0 calc(30 * var(--u)); }
 .entry-list ul { margin:0; padding:0; list-style:none; }
-.entry-list a { display:block; padding:9px 12px; border-radius:6px; color:var(--ink); font-size:calc(20.8px * var(--type-scale)); }
+.entry-list a { display:block; padding:calc(9 * var(--u)) calc(12 * var(--u)); border-radius:calc(6 * var(--u)); color:var(--ink); font-size:calc(calc(20.8 * var(--u)) * var(--type-scale)); }
 .entry-list a:hover { background:var(--hover-bg); text-decoration:none; }
 .entry-list a.is-open { background:var(--link-soft); }
 .entry-list a span { display:block; font-weight:700; }
-.entry-list time { display:block; margin-top:2px; font-size:calc(15.6px * var(--type-scale)); opacity:.6; }
-.pane[data-slug="blog"] .article-header { min-height:75px; }
-.pane[data-slug="blog"] .article-header h1 { font-size:calc(41.6px * var(--type-scale)); }
-.pane[data-slug="blog"] .article-meta { font-size:calc(20.72px * var(--type-scale)); }
-.pane[data-slug="blog"] .entry-list a { font-size:calc(25.26px * var(--type-scale)); }
-.pane[data-slug="blog"] .entry-list time { font-size:calc(18.2px * var(--type-scale)); }
+.entry-list time { display:block; margin-top:calc(2 * var(--u)); font-size:calc(calc(15.6 * var(--u)) * var(--type-scale)); opacity:.6; }
+.pane[data-slug="blog"] .article-header { min-height:calc(75 * var(--u)); }
+.pane[data-slug="blog"] .article-header h1 { font-size:calc(calc(41.6 * var(--u)) * var(--type-scale)); }
+.pane[data-slug="blog"] .article-meta { font-size:calc(calc(20.72 * var(--u)) * var(--type-scale)); }
+.pane[data-slug="blog"] .entry-list a { font-size:calc(calc(25.26 * var(--u)) * var(--type-scale)); }
+.pane[data-slug="blog"] .entry-list time { font-size:calc(calc(18.2 * var(--u)) * var(--type-scale)); }
 
 /* ── 筆記之間的連結 ─────────────────────────────── */
 /* 指向還沒寫的筆記：淡灰色的字，沒有底線也沒有問號（虛線底線留給「可以展開」的連結） */
 .wikilink-missing { color:var(--muted); cursor:help; }
 /* 已經在右邊展開的連結：用細框把字框起來（outline 不佔空間，開合時文字不會跳動） */
-.prose a.is-open { outline:1.3px solid var(--line); outline-offset:4px; border-radius:2px; }
+.prose a.is-open { outline:calc(1.3 * var(--u)) solid var(--line); outline-offset:calc(4 * var(--u)); border-radius:calc(2 * var(--u)); }
 .backlinks a.is-open { background:var(--link-soft); }
-.backlinks { margin-top:8px; padding:26px 0 30px; border-top:1.3px solid var(--line); }
-.backlinks h2 { margin:0 0 14px; font-size:calc(24.96px * var(--type-scale)); font-weight:400; line-height:1.4; }
-.backlinks ul { margin:0; padding:0; list-style:none; display:grid; gap:8px; }
+.backlinks { margin-top:calc(8 * var(--u)); padding:calc(26 * var(--u)) 0 calc(30 * var(--u)); border-top:calc(1.3 * var(--u)) solid var(--line); }
+.backlinks h2 { margin:0 0 calc(14 * var(--u)); font-size:calc(calc(24.96 * var(--u)) * var(--type-scale)); font-weight:400; line-height:1.4; }
+.backlinks ul { margin:0; padding:0; list-style:none; display:grid; gap:calc(8 * var(--u)); }
 .backlinks li { padding:0; }
-.backlinks a { color:var(--link); font-size:calc(18.2px * var(--type-scale)); font-weight:400; letter-spacing:.04em; }
-.backlinks p { margin:2px 0 0; color:var(--ink); font-size:calc(15.6px * var(--type-scale)); line-height:1.7; }
+.backlinks a { color:var(--link); font-size:calc(calc(18.2 * var(--u)) * var(--type-scale)); font-weight:400; letter-spacing:.04em; }
+.backlinks p { margin:calc(2 * var(--u)) 0 0; color:var(--ink); font-size:calc(calc(15.6 * var(--u)) * var(--type-scale)); line-height:1.7; }
 .pane-spine,.pane-tools { display:none; }
 /* 游標的蒲公英拖尾（src/scripts/dandelion-trail.ts）：一張蓋在最上層、不擋滑鼠的透明畫布 */
 /* 清風拂過（src/scripts/wind-cloth.ts）：只扭動文字與導覽內容，卡片紙面維持原透明度 */
@@ -224,17 +235,17 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
 
 @media (max-width:899px) {
   /* 窄螢幕的導覽列：放不下就換到第二行，項目本身不要被拆成兩行 */
-  .site-header { flex-wrap:wrap; gap:6px 22px; }
-  .site-header nav { gap:18px; }
+  .site-header { flex-wrap:wrap; gap:calc(6 * var(--u)) calc(22 * var(--u)); }
+  .site-header nav { gap:calc(18 * var(--u)); }
   .site-header nav a,.wordmark small { white-space:nowrap; }
 }
 /* 手機版：導覽列和「← 所有日誌」字體加大為 1.4 倍（窄螢幕與手機各自以原本的字級 × 1.4） */
 @media (max-width:899px) {
-  .site-header nav { font-size:calc(20.8px * 1.4 * var(--type-scale)); }
-  .back-link { font-size:calc(15.6px * 1.4 * var(--type-scale)); }
+  .site-header nav { font-size:calc(calc(20.8 * var(--u)) * 1.4 * var(--type-scale)); }
+  .back-link { font-size:calc(calc(15.6 * var(--u)) * 1.4 * var(--type-scale)); }
 }
 @media (max-width:620px) {
-  .site-header nav { font-size:calc(16.64px * 1.4 * var(--type-scale)); }
+  .site-header nav { font-size:calc(calc(16.64 * var(--u)) * 1.4 * var(--type-scale)); }
 }
 
 /* ── 文章頁：往右展開的堆疊（桌面寬度才啟用） ───────
@@ -242,62 +253,63 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
    放不下時，右邊的紙會滑到左邊的紙上面（部分重疊），
    被蓋到只剩一條時，才換成直排標題的書脊。 */
 @media (min-width:900px) {
-  :root { --spine:43px; --nav-w:73px; --frame-inset:32px; --stack-pad:0px; --pane-gap:0px; --pane-w:clamp(701px, calc((100vw - 2 * var(--frame-inset) - 2px - var(--nav-w)) * .54 + 10px), 874px); }
+  :root { --spine:calc(43 * var(--u)); --nav-w:calc(73 * var(--u)); --frame-inset:calc(32 * var(--u)); --stack-pad:calc(0 * var(--u)); --pane-gap:calc(0 * var(--u)); --pane-w:clamp(calc(701 * var(--u)), calc((100vw - 2 * var(--frame-inset) - calc(2 * var(--u)) - var(--nav-w)) * .54 + calc(10 * var(--u))), calc(874 * var(--u))); }
   /* 上方留白縮至原本的 0.6 倍 */
   body.has-stack { height:100vh; padding:calc(var(--frame-inset) * 1.2) var(--frame-inset) 0; overflow:hidden; }
   .has-stack .site-frame { flex-direction:row; width:100%; height:100%; min-height:0; overflow:visible; background:transparent; border:0; box-shadow:none; }
   /* 紙張感：不畫框線。導覽列和每一頁各是一張紙，四周有淡淡的陰影；右邊的紙壓在左邊的紙上，在左邊那張投下一道影子。
      --sheet-room 是整疊紙上下往內縮的距離，留給陰影顯示 */
   /* --sheet-bottom：整疊紙底下露出背景的高度；--stack-sb：橫向捲軸的高度（stack.ts 量出來寫入），捲軸就落在這段露出的空間裡 */
-  :root { --sheet-room:14px; --sheet-bottom:10px; --sheet-shadow:0 1px 2px rgba(60,50,40,.10),0 8px 22px rgba(60,50,40,.10); }
-  :root[data-theme="dark"] { --sheet-shadow:0 1px 2px rgba(0,0,0,.25),0 8px 22px rgba(0,0,0,.35); }
-  .has-stack .site-header { flex:none; flex-direction:row; align-items:center; gap:24px; position:relative; width:var(--nav-w); min-height:0; height:calc(100% - var(--sheet-room) - max(var(--sheet-bottom), var(--stack-sb, 0px))); margin:var(--sheet-room) 0 0; padding:55px 0 16px; border:0; background:var(--paper); border-radius:3px 0 0 3px; box-shadow:var(--sheet-shadow); writing-mode:vertical-rl; }
+  :root { --sheet-room:calc(14 * var(--u)); --sheet-bottom:calc(10 * var(--u)); --sheet-shadow:0 calc(1 * var(--u)) calc(2 * var(--u)) rgba(60,50,40,.10),0 calc(8 * var(--u)) calc(22 * var(--u)) rgba(60,50,40,.10); }
+  :root[data-theme="dark"] { --sheet-shadow:0 calc(1 * var(--u)) calc(2 * var(--u)) rgba(0,0,0,.25),0 calc(8 * var(--u)) calc(22 * var(--u)) rgba(0,0,0,.35); }
+  .has-stack .site-header { flex:none; flex-direction:row; align-items:center; gap:calc(24 * var(--u)); position:relative; width:var(--nav-w); min-height:0; height:calc(100% - var(--sheet-room) - max(var(--sheet-bottom), var(--stack-sb, calc(0 * var(--u))))); margin:var(--sheet-room) 0 0; padding:calc(55 * var(--u)) 0 calc(16 * var(--u)); border:0; background:var(--paper); border-radius:calc(3 * var(--u)) 0 0 calc(3 * var(--u)); box-shadow:var(--sheet-shadow); writing-mode:vertical-rl; }
   /* 導覽列是最底下那張紙：第一頁壓在它上面的影子（第一頁自己的陰影會被捲動區切掉，所以畫在導覽列這一側） */
-  .has-stack .site-header::after { content:""; position:absolute; top:0; bottom:0; right:0; width:16px; background:linear-gradient(to right,transparent,rgba(60,50,40,.09)); pointer-events:none; }
+  .has-stack .site-header::after { content:""; position:absolute; top:0; bottom:0; right:0; width:calc(16 * var(--u)); background:linear-gradient(to right,transparent,rgba(60,50,40,.09)); pointer-events:none; }
   :root[data-theme="dark"] .has-stack .site-header::after { background:linear-gradient(to right,transparent,rgba(0,0,0,.14)); }
-  .has-stack .wordmark { gap:9px; margin-top:16px; font-size:calc(34.248px * var(--type-scale)); letter-spacing:.12em; }
-  .has-stack .site-header nav { gap:19px; font-size:calc(27.696px * var(--type-scale)); letter-spacing:.12em; }
-  .has-stack .theme-toggle { position:static; align-self:center; margin:-13px 0 0; transform:none; font-size:calc(27.456px * var(--type-scale)); }
-  .has-stack .site-header nav + .theme-toggle { margin-top:91px; }
+  .has-stack .wordmark { gap:calc(9 * var(--u)); margin-top:calc(16 * var(--u)); font-size:calc(calc(34.248 * var(--u)) * var(--type-scale)); letter-spacing:.12em; }
+  .has-stack .site-header nav { gap:calc(19 * var(--u)); font-size:calc(calc(27.696 * var(--u)) * var(--type-scale)); letter-spacing:.12em; }
+  .has-stack .site-header nav a { flex:none; white-space:nowrap; } /* 直排導覽：高度不夠時也不要把「日記」拆成兩欄 */
+  .has-stack .theme-toggle { position:static; align-self:center; margin:-13px 0 0; transform:none; font-size:calc(calc(27.456 * var(--u)) * var(--type-scale)); }
+  .has-stack .site-header nav + .theme-toggle { margin-top:calc(91 * var(--u)); }
   .has-stack .wordmark small { display:none; }
   .has-stack .site-footer,.has-stack .back-link { display:none; }
   .has-stack .article-shell { flex:1; width:auto; min-width:0; min-height:0; height:100%; margin:0; padding:0; }
   .stack { height:100%; overflow-x:auto; overflow-y:hidden; scrollbar-width:thin; scrollbar-color:rgba(0,0,0,.3) transparent; }
   /* 右邊多留半個畫面的空白，最後一頁才有辦法被捲到畫面正中央 */
-  .stack-track { display:flex; width:max-content; min-width:100%; height:100%; padding:var(--sheet-room) var(--stack-pad) max(0px, calc(var(--sheet-bottom) - var(--stack-sb, 0px))); padding-right:max(var(--stack-pad), calc((100% - var(--pane-w)) / 2)); }
-  .pane { position:sticky; left:calc(var(--stack-pad) + var(--i,0) * var(--spine)); flex:none; width:var(--pane-w); height:100%; margin-left:var(--pane-gap); overflow:hidden; background:var(--paper); border:0; border-radius:2px; box-shadow:-14px 0 22px -10px rgba(60,50,40,.22),var(--sheet-shadow); transition:box-shadow .2s ease; }
-  :root[data-theme="dark"] .pane { box-shadow:-14px 0 22px -10px rgba(0,0,0,.3),var(--sheet-shadow); }
-  /* 列表卡片的寬度跟著最長的那一行字走；最窄 194px，列表項目一律不換行 */
-  .pane--narrow { width:max-content; min-width:194px; }
+  .stack-track { display:flex; width:max-content; min-width:100%; height:100%; padding:var(--sheet-room) var(--stack-pad) max(calc(0 * var(--u)), calc(var(--sheet-bottom) - var(--stack-sb, calc(0 * var(--u))))); padding-right:max(var(--stack-pad), calc((100% - var(--pane-w)) / 2)); }
+  .pane { position:sticky; left:calc(var(--stack-pad) + var(--i,0) * var(--spine)); flex:none; width:var(--pane-w); height:100%; margin-left:var(--pane-gap); overflow:hidden; background:var(--paper); border:0; border-radius:calc(2 * var(--u)); box-shadow:-14px 0 calc(22 * var(--u)) -10px rgba(60,50,40,.22),var(--sheet-shadow); transition:box-shadow .2s ease; }
+  :root[data-theme="dark"] .pane { box-shadow:-14px 0 calc(22 * var(--u)) -10px rgba(0,0,0,.3),var(--sheet-shadow); }
+  /* 列表卡片的寬度跟著最長的那一行字走；最窄 calc(194 * var(--u))，列表項目一律不換行 */
+  .pane--narrow { width:max-content; min-width:calc(194 * var(--u)); }
   .pane--narrow .entry-list a,.pane--narrow .entry-list time,.pane--narrow .note-group summary { white-space:nowrap; }
-  .pane--narrow .pane-body { padding:0 22px 14px 12px; }
-  .pane--narrow .article-header { padding-left:6px; }
+  .pane--narrow .pane-body { padding:0 calc(22 * var(--u)) calc(14 * var(--u)) calc(12 * var(--u)); }
+  .pane--narrow .article-header { padding-left:calc(6 * var(--u)); }
   .pane:first-child { margin-left:0; box-shadow:var(--sheet-shadow); }
   /* 真的蓋在前一頁上面時，影子更深一點 */
-  .pane.is-overlapping { box-shadow:-22px 0 30px -10px rgba(60,50,40,.30),var(--sheet-shadow); }
-  :root[data-theme="dark"] .pane.is-overlapping { box-shadow:-22px 0 30px -10px rgba(0,0,0,.38),var(--sheet-shadow); }
-  .pane-body { height:100%; padding:0 66px 22px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(0,0,0,.2) transparent; transition:opacity .2s ease; }
+  .pane.is-overlapping { box-shadow:-22px 0 calc(30 * var(--u)) -10px rgba(60,50,40,.30),var(--sheet-shadow); }
+  :root[data-theme="dark"] .pane.is-overlapping { box-shadow:-22px 0 calc(30 * var(--u)) -10px rgba(0,0,0,.38),var(--sheet-shadow); }
+  .pane-body { height:100%; padding:0 calc(66 * var(--u)) calc(22 * var(--u)); overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(0,0,0,.2) transparent; transition:opacity .2s ease; }
   /* 文章排成直欄並至少撐滿這一頁的可見高度；文章長的時候照常接在內文後面 */
-  .pane .article { display:flex; flex-direction:column; width:100%; min-height:calc(100% - 60px); margin:60px 0 0; }
-  .pane .article-header h1 { font-size:calc(41.6px * var(--type-scale)); }
-  .pane-spine { display:block; position:absolute; inset:0 auto 0 0; width:var(--spine); padding:16px 0 0; overflow:hidden; border:0; background:var(--paper); color:var(--ink); font:inherit; font-size:calc(22.88px * var(--type-scale)); line-height:var(--spine); letter-spacing:.06em; text-align:start; white-space:nowrap; writing-mode:vertical-rl; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s ease; }
+  .pane .article { display:flex; flex-direction:column; width:100%; min-height:calc(100% - calc(60 * var(--u))); margin:calc(60 * var(--u)) 0 0; }
+  .pane .article-header h1 { font-size:calc(calc(41.6 * var(--u)) * var(--type-scale)); }
+  .pane-spine { display:block; position:absolute; inset:0 auto 0 0; width:var(--spine); padding:calc(16 * var(--u)) 0 0; overflow:hidden; border:0; background:var(--paper); color:var(--ink); font:inherit; font-size:calc(calc(22.88 * var(--u)) * var(--type-scale)); line-height:var(--spine); letter-spacing:.06em; text-align:start; white-space:nowrap; writing-mode:vertical-rl; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s ease; }
   /* 每一頁右上角的 ×：關掉這一頁（這一頁收成書脊時不顯示）。
      要讓被蓋住或被切掉的頁完整露出來，直接點那一頁就可以 */
   .pane-tools { display:contents; }
-  .pane-close { position:absolute; top:7px; right:9px; z-index:1; width:23px; height:23px; padding:0; border:0; border-radius:6px; background:transparent; color:var(--muted); font:inherit; font-size:calc(27.04px * var(--type-scale)); line-height:1; letter-spacing:0; text-align:center; cursor:pointer; transition:color .15s ease,background .15s ease; }
+  .pane-close { position:absolute; top:calc(7 * var(--u)); right:calc(9 * var(--u)); z-index:1; width:calc(23 * var(--u)); height:calc(23 * var(--u)); padding:0; border:0; border-radius:calc(6 * var(--u)); background:transparent; color:var(--muted); font:inherit; font-size:calc(calc(27.04 * var(--u)) * var(--type-scale)); line-height:1; letter-spacing:0; text-align:center; cursor:pointer; transition:color .15s ease,background .15s ease; }
   .pane-close:hover { background:var(--hover-bg); color:var(--ink); }
-  .pane--narrow .pane-close { top:6px; right:4px; }
+  .pane--narrow .pane-close { top:calc(6 * var(--u)); right:calc(4 * var(--u)); }
   .pane.is-collapsed .pane-tools { display:none; }
   .pane.is-collapsed .pane-spine { opacity:1; pointer-events:auto; }
   .pane.is-collapsed .pane-body { opacity:0; pointer-events:none; }
   /* 關閉中：寬度縮到 0、同時淡出，右邊的頁會跟著往左滑過來 */
   .pane.is-closing { width:0 !important; min-width:0; border-left-width:0; border-right-width:0; opacity:0; pointer-events:none; transition:width .3s cubic-bezier(.4,0,.2,1),opacity .24s ease; }
   .pane.is-entering { animation:pane-in .3s ease both; }
-  @keyframes pane-in { from { opacity:0; transform:translateX(28px); } }
+  @keyframes pane-in { from { opacity:0; transform:translateX(calc(28 * var(--u))); } }
 }
 /* 背景照片＋半透明的紙：照片放在最底下（public/backdrop.jpg），每張紙只帶一點點透明，
    再把透上來的東西模糊掉——看得出後面有東西，但不會干擾閱讀 */
-:root { --sheet-alpha: 92%; --sheet-blur: 18px; }
+:root { --sheet-alpha: 92%; --sheet-blur: calc(18 * var(--u)); }
 body { background-color:transparent; } /* 讓最底下的照片透得出來 */
 /* 依螢幕方向重複平鋪背景；不使用 round，避免為了填滿視窗而改變原圖比例。 */
 body::before { content:""; position:fixed; inset:0; z-index:-1; background:url(/backdrop-room.png) left top / auto 100% repeat-x; pointer-events:none; }
