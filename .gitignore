@@ -3,3 +3,4 @@ dist/
 .astro/
 .obsidian/
 .DS_Store
+.wrangler/

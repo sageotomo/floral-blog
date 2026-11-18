@@ -151,8 +151,6 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
 .prose a:not([href^="/"]) { text-decoration:underline; text-decoration-color:var(--ink); text-underline-offset:3px; }
 .backlinks a:hover { text-decoration:underline; text-underline-offset:3px; }
 .prose a[href^="/"]:not(.is-open):hover { text-decoration-color:var(--ink); }
-.article-end { margin-top:14px; padding-top:24px; border-top:1.3px solid var(--line); color:var(--muted); text-align:center; font-size:calc(16.64px * var(--type-scale)); }
-.article-end p { margin:0; }
 .site-footer { display: flex; justify-content: space-between; gap: 18px; width: 100%; margin: auto 0 0; padding: 22px 32px 30px; border-top: 1.3px solid var(--line); color: var(--muted); font-size: calc(14.56px * var(--type-scale)); }
 @media (max-width:620px) {
   body { font-size:calc(18.72px * var(--type-scale)); padding:16px 0; }
@@ -230,13 +228,21 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
   .site-header nav { gap:18px; }
   .site-header nav a,.wordmark small { white-space:nowrap; }
 }
+/* 手機版：導覽列和「← 所有日誌」字體加大為 1.4 倍（窄螢幕與手機各自以原本的字級 × 1.4） */
+@media (max-width:899px) {
+  .site-header nav { font-size:calc(20.8px * 1.4 * var(--type-scale)); }
+  .back-link { font-size:calc(15.6px * 1.4 * var(--type-scale)); }
+}
+@media (max-width:620px) {
+  .site-header nav { font-size:calc(16.64px * 1.4 * var(--type-scale)); }
+}
 
 /* ── 文章頁：往右展開的堆疊（桌面寬度才啟用） ───────
    每一頁是一張白紙，紙和紙邊靠邊相連，沒有框線，靠陰影表現一張疊一張。
    放不下時，右邊的紙會滑到左邊的紙上面（部分重疊），
    被蓋到只剩一條時，才換成直排標題的書脊。 */
 @media (min-width:900px) {
-  :root { --spine:43px; --nav-w:73px; --frame-inset:32px; --stack-pad:0px; --pane-gap:0px; --pane-w:clamp(691px, calc((100vw - 2 * var(--frame-inset) - 2px - var(--nav-w)) * .54), 864px); }
+  :root { --spine:43px; --nav-w:73px; --frame-inset:32px; --stack-pad:0px; --pane-gap:0px; --pane-w:clamp(701px, calc((100vw - 2 * var(--frame-inset) - 2px - var(--nav-w)) * .54 + 10px), 874px); }
   /* 上方留白縮至原本的 0.6 倍 */
   body.has-stack { height:100vh; padding:calc(var(--frame-inset) * 1.2) var(--frame-inset) 0; overflow:hidden; }
   .has-stack .site-frame { flex-direction:row; width:100%; height:100%; min-height:0; overflow:visible; background:transparent; border:0; box-shadow:none; }
@@ -273,7 +279,6 @@ a:hover { text-decoration:underline; text-decoration-color:var(--blue); text-und
   .pane-body { height:100%; padding:0 66px 22px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(0,0,0,.2) transparent; transition:opacity .2s ease; }
   /* 文章排成直欄並至少撐滿這一頁的可見高度；文章長的時候照常接在內文後面 */
   .pane .article { display:flex; flex-direction:column; width:100%; min-height:calc(100% - 60px); margin:60px 0 0; }
-  .pane .article-end { display:none; }
   .pane .article-header h1 { font-size:calc(41.6px * var(--type-scale)); }
   .pane-spine { display:block; position:absolute; inset:0 auto 0 0; width:var(--spine); padding:16px 0 0; overflow:hidden; border:0; background:var(--paper); color:var(--ink); font:inherit; font-size:calc(22.88px * var(--type-scale)); line-height:var(--spine); letter-spacing:.06em; text-align:start; white-space:nowrap; writing-mode:vertical-rl; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s ease; }
   /* 每一頁右上角的 ×：關掉這一頁（這一頁收成書脊時不顯示）。

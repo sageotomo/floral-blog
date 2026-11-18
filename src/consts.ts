@@ -1,4 +1,4 @@
-export const SITE_TITLE = "AY's Blog";
+export const SITE_TITLE = "A.Y.'s Blog";
 export const SITE_DESCRIPTION = '在日常裡拾起一點靈感，慢慢寫下來。';
 
 // 筆記的類別：決定目錄裡的順序和圖示。

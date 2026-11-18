@@ -21,5 +21,5 @@ description: 這個網站用到的工具、字型和特效，以及它們的靈�
 - 風是用 SVG 濾鏡 [`feDisplacementMap`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap) 把頁面推出像布一樣的波紋。會想做這個效果，是因為看到 wtc-gl 的 [Verlet Cloth](https://wethegit.github.io/wtc-gl/demos/scroll-image-cloth/)。
 
 ## AI
-- 以上的版面特效，都是請 AI（Claude、Codex）來來回回改出來的，而想法和靈感素材是我找的。
+- 以上的版面特效，都是請 AI（Claude、Codex）來回修改出來的，而想法和靈感素材是我找的。
 - 全站文章是我自己寫的，不是 AI。
